@@ -14,6 +14,7 @@ const SignInFormContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
+const RememberMeSection = styled.div``;
 
 function SignInForm() {
   const [signInState, setFormState] = useState({
@@ -46,10 +47,16 @@ function SignInForm() {
             <SubmitButton>
               Sign in <span className="fas fa-sign-in-alt" />
             </SubmitButton>
+            <label htmlFor="rememberMe">Remember me</label>
+            <input type="checkbox" onChange={() => {}} id="rememberMe" />
             <p style={{ textAlign: "center" }}>or</p>
             <Socials>
-              <FacebookBtn>Sing in</FacebookBtn>
-              <GoogleBtn>Sing in</GoogleBtn>
+              <FacebookBtn>
+                Sing in <span className="fab fa-facebook-square" />
+              </FacebookBtn>
+              <GoogleBtn>
+                Sing in <span className="fab fa-google" />
+              </GoogleBtn>
             </Socials>
           </SignInFormContainer>
         </Form>
