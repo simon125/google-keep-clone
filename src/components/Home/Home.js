@@ -1,5 +1,5 @@
 import React from "react";
-import SignForm from "../SignForm/SignForm";
+import AuthForm from "../AuthForm/AuthForm";
 import styled from "styled-components";
 
 const HomeContainer = styled.div`
@@ -11,7 +11,7 @@ const HomeContainer = styled.div`
 function Home() {
   return (
     <HomeContainer>
-      <SignForm />
+      <AuthForm />
     </HomeContainer>
   );
 }
