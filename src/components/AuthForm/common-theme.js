@@ -8,6 +8,10 @@ export const InputField = styled.input`
   padding-left: 15px;
   width: 200px;
   height: 30px;
+  @media (max-width: 500px) {
+    width: 90vw;
+    margin: 5px 0;
+  }
 `;
 
 export const SubmitButton = styled.button`
@@ -25,6 +29,10 @@ export const SubmitButton = styled.button`
   &:hover {
     background: #ffa500;
   }
+  @media (max-width: 500px) {
+    width: 90vw;
+    margin: 5px 0;
+  }
 `;
 
 export const SocialsContainer = styled.div`
@@ -32,6 +40,11 @@ export const SocialsContainer = styled.div`
   width: 450px;
   display: flex;
   justify-content: space-between;
+  @media (max-width: 500px) {
+    width: auto;
+    flex-direction: column;
+    margin: 5px 0;
+  }
 `;
 
 export const FacebookBtn = styled.button`
@@ -44,6 +57,10 @@ export const FacebookBtn = styled.button`
   width: 48%;
   padding: 7px;
   border-radius: 5px;
+  @media (max-width: 500px) {
+    width: 90vw;
+    margin-top: 5px;
+  }
 `;
 
 export const GoogleBtn = styled.button`
@@ -56,6 +73,10 @@ export const GoogleBtn = styled.button`
   width: 48%;
   padding: 7px;
   border-radius: 5px;
+  @media (max-width: 500px) {
+    width: 90vw;
+    margin-top: 5px;
+  }
 `;
 
 export const AuthContainer = styled.div`
@@ -64,6 +85,11 @@ export const AuthContainer = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   align-items: flex-start;
+  @media (max-width: 500px) {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
 `;
 export const FormHeader = styled.h3`
   letter-spacing: 0.3px;
@@ -74,6 +100,9 @@ export const FormHeader = styled.h3`
 export const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
+  @media (max-width: 500px) {
+    width: 100%;
+  }
 `;
 export const Label = styled.label`
   letter-spacing: 0.3px;

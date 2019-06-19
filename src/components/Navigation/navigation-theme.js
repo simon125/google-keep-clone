@@ -50,7 +50,7 @@ export const MobileLinksGroup = styled.ul`
   transition: all 0.3s;
   overflow: hidden;
   height ${props => (props.isOpen ? "100vh" : "0")};
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
