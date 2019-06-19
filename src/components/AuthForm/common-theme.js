@@ -65,7 +65,6 @@ export const AuthContainer = styled.div`
   justify-content: center;
   align-items: flex-start;
 `;
-
 export const FormHeader = styled.h3`
   letter-spacing: 0.3px;
   text-align: center;
