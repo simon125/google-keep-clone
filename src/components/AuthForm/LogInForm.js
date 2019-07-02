@@ -8,9 +8,11 @@ import {
   FormHeader,
   FormContainer,
   Label,
-  RememberMeLabel
-} from "./common-theme";
+  RememberMeLabel,
+  InputErrMsg
+} from "./common-elements";
 import { Card } from "../../UI/theme";
+import { signInWithEmailAndPassword } from "../../firebase";
 
 const RememberMeSection = styled.div`
   margin-top: 10px;
@@ -19,13 +21,12 @@ const RememberMeSection = styled.div`
 `;
 const Checkbox = styled.input`
   margin: 0 3px;
-  background: transarent;
+  background: transparent;
 `;
-
 function LogInForm() {
-  const [signInState, setFormState] = useState({
-    email: "",
-    password: ""
+  const [signInState] = useState({
+    loginEmail: "",
+    loginPassword: ""
   });
 
   return (
@@ -33,32 +34,78 @@ function LogInForm() {
       <FormHeader>Login by email</FormHeader>
       <Formik
         initialValues={{ ...signInState }}
+        validateOnBlur={true}
+        validateOnChange={true}
         validationSchema={Yup.object().shape({
-          email: Yup.string()
-            .email("Invalid email")
-            .required("Required"),
-          password: Yup.string()
-            .min(2)
-            .max(10)
-            .required()
+          loginEmail: Yup.string()
+            .email("Invalid email!")
+            .required("Email is required!"),
+          loginPassword: Yup.string()
+            .min(2, "Password is to short")
+            .max(10, "Password is to long")
+            .required("Password is required!")
         })}
-        render={({ handleChange, errors, values }) => (
+        onSubmit={({ loginEmail, loginPassword }, { setErrors, resetForm }) => {
+          signInWithEmailAndPassword(loginEmail, loginPassword)
+            .then(() => {
+              resetForm();
+              alert("zalogowałeś się! ");
+              //TODO SHOW TOAST
+            })
+            .catch(error => {
+              //TODO check if there is possible to get multiply of errors message
+              const errorCode = error.code;
+              if (errorCode === "auth/invalid-email") {
+                setErrors({ loginEmail: "Invalid Email!" });
+              } else if (errorCode === "auth/user-disabled") {
+                setErrors({ loginEmail: "User is disabled!" });
+              } else if (errorCode === "auth/user-not-found") {
+                setErrors({ loginEmail: "User is not found!" });
+              } else if (errorCode === "auth/wrong-password") {
+                setErrors({
+                  loginPassword: "Wrong password"
+                });
+              } else {
+                setErrors({
+                  loginEmail: "Invalid Email",
+                  loginPassword: "Invalid password"
+                });
+              }
+            });
+        }}
+        render={({ handleChange, errors, values, touched, handleBlur }) => (
           <Form>
             <FormContainer>
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="loginEmail">Email</Label>
               <InputField
+                isInvalid={errors.loginEmail && touched.loginEmail}
+                value={values.loginEmail}
+                onChange={handleChange}
+                onBlur={handleBlur}
                 placeholder="Enter your email"
-                id="email"
-                name="email"
+                id="loginEmail"
+                name="loginEmail"
               />
-              <Label htmlFor="password">Password</Label>
+              <InputErrMsg isInvalid={errors.loginEmail && touched.loginEmail}>
+                {errors.loginEmail}
+              </InputErrMsg>
+              <Label htmlFor="loginPassword">Password</Label>
               <InputField
+                isInvalid={errors.loginPassword && touched.loginPassword}
+                value={values.loginPassword}
+                onChange={handleChange}
+                onBlur={handleBlur}
                 placeholder="Enter password"
                 type="password"
-                id="password"
-                name="password"
+                id="loginPassword"
+                name="loginPassword"
               />
-              <SubmitButton>
+              <InputErrMsg
+                isInvalid={errors.loginPassword && touched.loginPassword}
+              >
+                {errors.loginPassword}
+              </InputErrMsg>
+              <SubmitButton type="submit">
                 Sign in <span className="fas fa-sign-in-alt" />
               </SubmitButton>
               <RememberMeSection>

@@ -5,17 +5,18 @@ import {
   FacebookBtn,
   GoogleBtn,
   FormHeader
-} from "./common-theme";
+} from "./common-elements";
+import { signInWithGoogle, signInWithFacebook } from "../../firebase";
 
 function SocialsAuth() {
   return (
     <Card>
       <FormHeader>Continue with socials</FormHeader>
       <SocialsContainer>
-        <FacebookBtn>
+        <FacebookBtn onClick={signInWithFacebook}>
           Sing in with <Icon className="fab fa-facebook-square" />
         </FacebookBtn>
-        <GoogleBtn>
+        <GoogleBtn onClick={signInWithGoogle}>
           Sing in with <Icon className="fab fa-google" />
         </GoogleBtn>
       </SocialsContainer>

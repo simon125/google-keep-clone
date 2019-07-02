@@ -2,7 +2,7 @@ import React from "react";
 import LogInForm from "./LogInForm";
 import RegisterForm from "./RegisterForm";
 import SocialsAuth from "./SocialsAuth";
-import { AuthContainer } from "./common-theme";
+import { AuthContainer } from "./common-elements";
 
 function AuthForm() {
   return (

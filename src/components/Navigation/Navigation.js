@@ -9,9 +9,10 @@ import {
   MobileLinksGroup,
   CloseNavBtn,
   NavMobileElement
-} from "./navigation-theme";
+} from "./navigation-elements";
 import { Link } from "react-router-dom";
 import { Icon } from "../../UI/theme";
+import { signOut } from "../../firebase";
 
 function DesktopNav() {
   return (
@@ -32,7 +33,7 @@ function DesktopNav() {
         </Link>
       </NavElement>
       <NavElement>
-        <AuthButton>Log out</AuthButton>
+        <AuthButton onClick={signOut}>Log out</AuthButton>
       </NavElement>
     </DesktopLinksGroup>
   );
@@ -73,7 +74,12 @@ function MobileNav() {
           </Link>
         </NavMobileElement>
         <NavMobileElement>
-          <AuthButton onClick={() => toggleMobileNav(!isMobileNavOpen)}>
+          <AuthButton
+            onClick={() => {
+              signOut();
+              toggleMobileNav(!isMobileNavOpen);
+            }}
+          >
             <Icon className="fas fa-sign-out-alt" /> Log out
           </AuthButton>
         </NavMobileElement>

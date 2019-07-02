@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import {
@@ -7,12 +6,14 @@ import {
   SubmitButton,
   FormHeader,
   FormContainer,
-  Label
-} from "./common-theme";
+  Label,
+  InputErrMsg
+} from "./common-elements";
 import { Card } from "../../UI/theme";
+import { createUserWithEmailAndPassword } from "../../firebase";
 
 function RegisterForm() {
-  const [signUpState, setFormState] = useState({
+  const [signUpState] = useState({
     email: "",
     password: "",
     name: "",
@@ -26,58 +27,109 @@ function RegisterForm() {
         initialValues={{ ...signUpState }}
         validationSchema={Yup.object().shape({
           name: Yup.string()
-            .min(2)
-            .max(10)
-            .required(),
+            .min(2, "Name is to short!")
+            .max(10, "Name is to long!")
+            .required("Name is required!"),
           email: Yup.string()
             .email("Invalid email")
-            .required("Required"),
+            .required("Email is required!"),
           password: Yup.string()
-            .min(2)
-            .max(10)
-            .required(),
+            .min(2, "Password is to short!")
+            .max(10, "Password is to long!")
+            .required("Password is required!"),
           repeatedPassword: Yup.string()
             .oneOf([Yup.ref("password"), null], "Passwords must match")
-            .required("Required")
+            .required("Password is required!")
         })}
-        render={({ handleChange, values, errors, touched }) => (
+        onSubmit={({ email, password }, { setErrors, resetForm }) => {
+          createUserWithEmailAndPassword(email, password)
+            .then(() => {
+              resetForm();
+              //TODO SHOW TOAST
+              alert("You have created account successfully!");
+            })
+            .catch(error => {
+              //TODO check if there is possible to get multiply of errors message
+              const errorCode = error.code;
+              if (errorCode === "auth/weak-password") {
+                setErrors({ password: "Password is to weak!" });
+              } else if (errorCode === "auth/invalid-email") {
+                setErrors({ email: "Invalid Email" });
+              } else if (errorCode === "auth/email-already-in-use") {
+                setErrors({ email: "Email already in use!" });
+              } else if (errorCode === "auth/operation-not-allowed") {
+                setErrors({
+                  email: "Invalid Email",
+                  password: "Invalid password"
+                });
+              } else {
+                setErrors({
+                  email: "Invalid Email",
+                  password: "Invalid password"
+                });
+              }
+            });
+        }}
+        render={({ handleChange, values, errors, touched, handleBlur }) => (
           <Form>
             <FormContainer>
               <Label htmlFor="name">Name</Label>
               <InputField
                 onChange={handleChange}
+                onBlur={handleBlur}
+                isInvalid={errors.name && touched.name}
                 value={values.name}
                 placeholder="Enter name"
                 id="name"
                 name="name"
               />
+              <InputErrMsg isInvalid={errors.name && touched.name}>
+                {errors.name}
+              </InputErrMsg>
               <Label htmlFor="email">Email</Label>
               <InputField
                 onChange={handleChange}
+                onBlur={handleBlur}
+                isInvalid={errors.email && touched.email}
                 value={values.email}
                 placeholder="Enter email"
                 id="email"
                 name="email"
               />
+              <InputErrMsg isInvalid={errors.email && touched.email}>
+                {errors.email}
+              </InputErrMsg>
               <Label htmlFor="password">Password</Label>
               <InputField
                 onChange={handleChange}
+                onBlur={handleBlur}
+                isInvalid={errors.password && touched.password}
                 value={values.password}
                 placeholder="Enter password"
                 type="password"
                 id="password"
                 name="password"
               />
+              <InputErrMsg isInvalid={errors.password && touched.password}>
+                {errors.password}
+              </InputErrMsg>
               <Label htmlFor="repeatedPassword">Repeat password</Label>
               <InputField
                 onChange={handleChange}
+                onBlur={handleBlur}
+                isInvalid={errors.repeatedPassword && touched.repeatedPassword}
                 value={values.repeatedPassword}
-                placeholder="Repeat passowrd"
+                placeholder="Repeat password"
                 type="password"
                 id="repeatedPassword"
                 name="repeatedPassword"
               />
-              <SubmitButton>
+              <InputErrMsg
+                isInvalid={errors.repeatedPassword && touched.repeatedPassword}
+              >
+                {errors.repeatedPassword}
+              </InputErrMsg>
+              <SubmitButton type="submit">
                 Sign up <span className="fas fa-user-plus" />
               </SubmitButton>
             </FormContainer>

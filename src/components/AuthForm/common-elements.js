@@ -1,10 +1,11 @@
 import styled from "styled-components";
 
 export const InputField = styled.input`
-  margin: 10px 5px;
-  border: 1px solid #bbb;
-  border-radius: 5px;
+  margin: 4px 5px 8px 5px;
   outline: none;
+  border: ${({ isInvalid }) =>
+    isInvalid ? "solid 1px red" : "1px solid #bbb"};
+  border-radius: 5px;
   padding-left: 15px;
   width: 200px;
   height: 30px;
@@ -12,6 +13,15 @@ export const InputField = styled.input`
     width: 90vw;
     margin: 5px 0;
   }
+`;
+export const InputErrMsg = styled.p`
+  position: relative;
+  margin-top: -7px;
+  margin-bottom: -4px;
+  padding-left: 5px;
+  color: red;
+  font-size: 10px;
+  display: ${({ isInvalid }) => (isInvalid ? "block" : "none")};
 `;
 
 export const SubmitButton = styled.button`
