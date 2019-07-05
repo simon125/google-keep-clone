@@ -15,11 +15,9 @@ export const logOut = () => {
   };
 };
 
-const initialState = () => {
-  return {
-    isLoggedIn: false,
-    user: null
-  };
+const initialState = {
+  isLoggedIn: false,
+  user: null
 };
 
 export const auth = (state = initialState, action) => {
