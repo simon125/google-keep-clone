@@ -13,7 +13,9 @@ const Pallette = styled.div`
   justify-content: center;
   flex-wrap: wrap;
 `;
-const Icon = styled.span``;
+const Icon = styled.span`
+  color: ${props => (props.color ? props.color : "auto")};
+`;
 const Tool = styled.button`
   color: #666;
   border: none;
