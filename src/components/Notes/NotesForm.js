@@ -127,6 +127,12 @@ function NotesForm({ addNote }) {
             <Icon className="far fa-check-square fa-lg" />
           </Tool>
         )}
+
+        <ul>
+          {noteState.tags.map(tag => (
+            <li key={tag}>{tag}</li>
+          ))}
+        </ul>
       </FormGroup>
       {isInputOpen ? (
         <FormToolsGroup>
@@ -139,13 +145,13 @@ function NotesForm({ addNote }) {
               <Icon className="fas fa-list-ul" />
             </Tool>
           )}
-          <TagWidget />
-          {/* <Tool>
-            <Icon className="fas fa-tags" />
-          </Tool> */}
+          <TagWidget
+            chosenTags={noteState.tags}
+            setTags={tags => setNoteState({ ...noteState, tags })}
+          />
           <ColorPicker
             chosenColor={noteState.bgColor}
-            setColor={color => setNoteState({ ...noteState, bgColor: color })}
+            setColor={bgColor => setNoteState({ ...noteState, bgColor })}
           />
           <CloseBtn onClick={handleCloseClick}>Zamknij</CloseBtn>
         </FormToolsGroup>
