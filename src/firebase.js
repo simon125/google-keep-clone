@@ -2,7 +2,7 @@ import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 import { logIn, logOut } from "./redux/auth";
-import { getNotes } from "./redux/notes";
+import { getNotes, getTags } from "./redux/notes";
 import { store } from "./redux/storeConfig";
 
 const googleProvider = new firebase.auth.GoogleAuthProvider();
@@ -103,6 +103,18 @@ db.collection("test1").onSnapshot(
       notes.push({ ...el.data(), id: el.id });
     });
     store.dispatch(getNotes(notes));
+  },
+  err => {
+    console.log(err);
+  }
+);
+db.collection("tags").onSnapshot(
+  snapshot => {
+    const tags = [];
+    snapshot.forEach(el => {
+      tags.push({ ...el.data(), id: el.id });
+    });
+    store.dispatch(getTags(tags));
   },
   err => {
     console.log(err);

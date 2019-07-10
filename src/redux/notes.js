@@ -3,6 +3,7 @@ import { db } from "../firebase";
 const ADD_NOTE = "ADD_NOTE";
 const DELETE_NOTE = "DELETE_NOTE";
 const GET_NOTES = "GET_NOTES";
+const GET_TAGS = "GET_TAGS";
 
 export const addNote = note => (dispatch, getState) => {
   db.collection("test1")
@@ -17,9 +18,24 @@ export const getNotes = notes => {
     payload: notes
   };
 };
+export const addTag = tag => (dispatch, getState) => {
+  console.log("addTag: ", tag);
+  db.collection("tags")
+    .add(tag)
+    .then(() => {
+      console.warn("added tag");
+    });
+};
+export const getTags = tags => {
+  return {
+    type: GET_TAGS,
+    payload: tags
+  };
+};
 
 const initialState = {
-  notes: []
+  notes: [],
+  tags: []
 };
 
 export const notes = (state = initialState, action) => {
@@ -33,6 +49,11 @@ export const notes = (state = initialState, action) => {
       return {
         ...state,
         notes: action.payload
+      };
+    case "GET_TAGS":
+      return {
+        ...state,
+        tags: action.payload
       };
     // case "DELETE_NOTE":
     //   return {

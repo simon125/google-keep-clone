@@ -16,7 +16,7 @@ import { addNote } from "../../redux/notes";
 import ColorPicker from "../ColorPicker/ColorPicker";
 import TagWidget from "../TagWidget/TagWidget";
 
-function NotesForm({ addNote }) {
+function NotesForm({ addNote, availableTags }) {
   const [isInputOpen, toggleInput] = useState(false);
   const [noteState, setNoteState] = useState({
     title: "",
@@ -127,13 +127,34 @@ function NotesForm({ addNote }) {
             <Icon className="far fa-check-square fa-lg" />
           </Tool>
         )}
-
-        <ul>
+      </FormGroup>
+      <div>
+        <ul style={{ display: "flex", listStyle: "none", flexWrap: "wrap" }}>
           {noteState.tags.map(tag => (
-            <li key={tag}>{tag}</li>
+            <li
+              style={{
+                color: "#666",
+                background: "rgb(240,240,240)",
+                borderRadius: "20px",
+                padding: "3px 7px",
+                margin: "5px 2px"
+              }}
+              key={tag}
+            >
+              {tag}
+              <span
+                style={{ marginLeft: "2px", cursor: "pointer" }}
+                onClick={() => {
+                  const newTags = noteState.tags.filter(el => el !== tag);
+                  setNoteState({ ...noteState, tags: newTags });
+                }}
+              >
+                &times;
+              </span>
+            </li>
           ))}
         </ul>
-      </FormGroup>
+      </div>
       {isInputOpen ? (
         <FormToolsGroup>
           {noteState.checkList ? (
@@ -146,6 +167,7 @@ function NotesForm({ addNote }) {
             </Tool>
           )}
           <TagWidget
+            tags={availableTags}
             chosenTags={noteState.tags}
             setTags={tags => setNoteState({ ...noteState, tags })}
           />
@@ -163,7 +185,9 @@ function NotesForm({ addNote }) {
 }
 
 const mapStateToProps = state => {
-  return {};
+  return {
+    availableTags: state.notes.tags
+  };
 };
 
 const mapDispatchToProps = {

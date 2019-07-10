@@ -42,6 +42,7 @@ export const TitleField = styled.input`
   font-size: 16px;
   font-weight: 400;
   margin-bottom: 18px;
+  width: 100%;
 `;
 export const NoteField = styled.input`
   background: transparent;
@@ -50,6 +51,7 @@ export const NoteField = styled.input`
   outline: none;
   letter-spacing: 0.7px;
   font-size: 15px;
+  width: 100%;
 `;
 export const CloseBtn = styled.button`
   background: transparent;
