@@ -19,5 +19,5 @@ export const Card = styled.div`
   }
 `;
 export const Icon = styled.span`
-  color: #fff;
+  color: ${props => (props.color ? props.color : "#fff")};
 `;
