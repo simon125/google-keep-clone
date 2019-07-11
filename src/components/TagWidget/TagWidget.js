@@ -26,7 +26,7 @@ function TagWidget({ chosenTags, setTags, tags = [], addTag }) {
   const handleSubmit = e => {
     e.preventDefault();
     const tag = tagName.trim();
-    if (tag !== "" && !tags.includes(tag)) {
+    if (tag !== "" && tags.every(tag => tagName.trim() !== tag.name)) {
       addTag({ name: tag });
       setNoteTags([...noteTags, tag]);
       setTag("");
@@ -34,11 +34,16 @@ function TagWidget({ chosenTags, setTags, tags = [], addTag }) {
   };
   const handleChange = e => setTag(e.target.value);
 
+  const subscription = store.subscribe(() => {
+    setTagsToDisplay(store.getState().notes.tags);
+  });
+
   useEffect(() => {
     if (tagName.trim() !== "") {
       const filteredTags = tags.filter(tag => tag.name.includes(tagName));
       setTagsToDisplay(filteredTags);
     }
+    return subscription();
   }, [tagName]);
   useEffect(() => {
     if (noteTags) {
@@ -46,10 +51,6 @@ function TagWidget({ chosenTags, setTags, tags = [], addTag }) {
       setTagsToDisplay(tags);
     }
   }, [noteTags]);
-
-  store.subscribe(() => {
-    setTagsToDisplay(store.getState().notes.tags);
-  });
 
   const handleCheckboxChange = e => {
     const isChecked = e.target.checked;
