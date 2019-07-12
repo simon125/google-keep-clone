@@ -1,14 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import initialData from "./initialData.js";
+import { DragDropContext } from "react-beautiful-dnd";
+import Column from "./Column";
 
 export const NoteListContainer = styled.div`
-  margin: 50px;
+  margin: 10px;
   max-width: 100vw;
 `;
 
 function NoteList({ notes }) {
+  const [dndState, setDndState] = useState(initialData);
+
   const onDragEnd = result => {
     const { destination, source, draggableId } = result;
 
@@ -21,34 +25,36 @@ function NoteList({ notes }) {
     ) {
       return;
     }
-
-    const column = notes.columns[source.droppableId];
-    const newNotesIds = Array.from(column.tasksIds);
-    newNotesIds.splice(source.index, 1);
-    newNotesIds.splice(destination.index, draggableId);
+    const column = dndState.columns[source.droppableId];
+    const newTaskIds = Array.from(column.tasksIds);
+    newTaskIds.splice(source.index, 1);
+    newTaskIds.splice(destination.index, 0, draggableId);
 
     const newColumn = {
       ...column,
-      tasksIds: newNotesIds
+      tasksIds: newTaskIds
     };
+
+    const newState = {
+      ...dndState,
+      columns: {
+        ...dndState.columns,
+        [newColumn.id]: newColumn
+      }
+    };
+
+    setDndState(newState);
   };
 
   return (
     <NoteListContainer>
-      <div
-        style={{
-          background: "#eee",
-          margin: "5px",
-          overflow: "hidden"
-        }}
-      >
-        badfasfdasdfasfdasdfasdf asdfasdfasdfasfasdfasdfasdf
-        asdfasdfasdfasfasdfasdfasdfasdf a dsf
-        asdfasdfasdfasfasdfasdfasdfasdffadf a sf
-        asdfasdfasdfasfasdfasdfasdfasdffasdf andasfd
-      </div>
-      <div style={{ background: "#eee", margin: "5px" }}>adfadfdfasdf c</div>
-      <div style={{ background: "#eee", margin: "5px" }}>aadfadfsafd</div>
+      <DragDropContext onDragEnd={onDragEnd}>
+        {dndState.columnOrder.map(columnId => {
+          const column = dndState.columns[columnId];
+          const tasks = column.tasksIds.map(taskId => dndState.tasks[taskId]);
+          return <Column key={column.id} column={column} tasks={tasks} />;
+        })}
+      </DragDropContext>
     </NoteListContainer>
   );
 }
