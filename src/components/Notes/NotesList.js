@@ -1,12 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-
-import Masonry from "react-masonry-component";
-import RGL, { WidthProvider } from "react-grid-layout";
-import ".../../../node_modules/react-grid-layout/css/styles.css";
-import "../../../node_modules/react-resizable/css/styles.css";
-const ReactGridLayout = WidthProvider(RGL);
+import initialData from "./initialData.js";
 
 export const NoteListContainer = styled.div`
   margin: 50px;
@@ -14,76 +9,46 @@ export const NoteListContainer = styled.div`
 `;
 
 function NoteList({ notes }) {
+  const onDragEnd = result => {
+    const { destination, source, draggableId } = result;
+
+    if (!destination) {
+      return;
+    }
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+
+    const column = notes.columns[source.droppableId];
+    const newNotesIds = Array.from(column.tasksIds);
+    newNotesIds.splice(source.index, 1);
+    newNotesIds.splice(destination.index, draggableId);
+
+    const newColumn = {
+      ...column,
+      tasksIds: newNotesIds
+    };
+  };
+
   return (
     <NoteListContainer>
-      <ReactGridLayout
-        className="layout"
-        cols={3}
-        rowHeight={30}
-        isResizable={false}
+      <div
+        style={{
+          background: "#eee",
+          margin: "5px",
+          overflow: "hidden"
+        }}
       >
-        <div
-          data-grid={{ x: 1, y: 0, w: 1, h: 6 }}
-          style={{
-            background: "#eee",
-            margin: "5px",
-            overflow: "hidden"
-          }}
-          key="b"
-        >
-          badfasfdasdfasfdasdfasdf asdfasdfasdfasfasdfasdfasdf
-          asdfasdfasdfasfasdfasdfasdfasdf a dsf
-          asdfasdfasdfasfasdfasdfasdfasdffadf a sf
-          asdfasdfasdfasfasdfasdfasdfasdffasdf andasfd
-        </div>
-        <div
-          data-grid={{ x: 1, y: 0, w: 1, h: 3 }}
-          style={{ background: "#eee", margin: "5px" }}
-          key="c"
-        >
-          adfadfdfasdf c
-        </div>
-        <div
-          data-grid={{ x: 2, y: 0, w: 1, h: 4 }}
-          style={{ background: "#eee", margin: "5px" }}
-          key="a"
-        >
-          aadfadfsafd
-        </div>
-      </ReactGridLayout>
-
-      {/* <Masonry
-        className={"my-gallery-class"} // default ''
-        elementType={"div"} // default 'div'
-        options={{}} // default {}
-        disableImagesLoaded={false} // default false
-        updateOnEachImageLoad={false} // default false and works only if disableImagesLoaded is false
-        imagesLoadedOptions={{}} // default {}
-      > */}
-      {/* <ReactGridLayout
-        layout={this.state.layout}
-        // onLayoutChange={this.onLayoutChange}
-        {...this.props}
-      > */}
-      {/* {notes.map(note => {
-          return (
-            <div
-              style={{
-                width: "200px",
-                margin: "5px",
-                padding: "10px",
-                backgroundColor: "#eee",
-                overflow: "auto"
-              }}
-              data-grid={{ x: 4, y: 0, w: 1, h: 2 }}
-              key={note.id}
-            >
-              {note.note}
-            </div>
-          );
-        })} */}
-      {/* </Masonry> */}
-      {/* </ReactGridLayout> */}
+        badfasfdasdfasfdasdfasdf asdfasdfasdfasfasdfasdfasdf
+        asdfasdfasdfasfasdfasdfasdfasdf a dsf
+        asdfasdfasdfasfasdfasdfasdfasdffadf a sf
+        asdfasdfasdfasfasdfasdfasdfasdffasdf andasfd
+      </div>
+      <div style={{ background: "#eee", margin: "5px" }}>adfadfdfasdf c</div>
+      <div style={{ background: "#eee", margin: "5px" }}>aadfadfsafd</div>
     </NoteListContainer>
   );
 }
