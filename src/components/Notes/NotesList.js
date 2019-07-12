@@ -8,6 +8,8 @@ import Column from "./Column";
 export const NoteListContainer = styled.div`
   margin: 10px;
   max-width: 100vw;
+  display: flex;
+  justify-content: space-between;
 `;
 
 function NoteList({ notes }) {
@@ -25,30 +27,55 @@ function NoteList({ notes }) {
     ) {
       return;
     }
-    const column = dndState.columns[source.droppableId];
-    const newTaskIds = Array.from(column.tasksIds);
-    newTaskIds.splice(source.index, 1);
-    newTaskIds.splice(destination.index, 0, draggableId);
+    const start = dndState.columns[source.droppableId];
+    const finish = dndState.columns[destination.droppableId];
+    if (start === finish) {
+      const newTaskIds = Array.from(start.tasksIds);
+      newTaskIds.splice(source.index, 1);
+      newTaskIds.splice(destination.index, 0, draggableId);
 
-    const newColumn = {
-      ...column,
-      tasksIds: newTaskIds
+      const newColumn = {
+        ...start,
+        tasksIds: newTaskIds
+      };
+
+      const newState = {
+        ...dndState,
+        columns: {
+          ...dndState.columns,
+          [newColumn.id]: newColumn
+        }
+      };
+
+      setDndState(newState);
+      return;
+    }
+    const startTaskIds = Array.from(start.tasksIds);
+    startTaskIds.splice(source.index, 1);
+    const newStart = {
+      ...start,
+      tasksIds: startTaskIds
     };
-
+    const finishTaskIds = Array.from(finish.tasksIds);
+    finishTaskIds.splice(destination.index, 0, draggableId);
+    const newFinish = {
+      ...finish,
+      tasksIds: finishTaskIds
+    };
     const newState = {
       ...dndState,
       columns: {
         ...dndState.columns,
-        [newColumn.id]: newColumn
+        [newStart.id]: newStart,
+        [newFinish.id]: newFinish
       }
     };
-
     setDndState(newState);
   };
 
   return (
     <NoteListContainer>
-      <DragDropContext onDragEnd={onDragEnd}>
+      <DragDropContext onDragStart={prop1 => {}} onDragEnd={onDragEnd}>
         {dndState.columnOrder.map(columnId => {
           const column = dndState.columns[columnId];
           const tasks = column.tasksIds.map(taskId => dndState.tasks[taskId]);

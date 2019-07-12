@@ -5,6 +5,11 @@ import { Droppable } from "react-beautiful-dnd";
 
 const TaskList = styled.div`
   padding: 8px;
+  background: #eee;
+  margin: 10px 20px;
+  width: 30vw;
+  display: flex;
+  flex-direction: column;
 `;
 
 function Column({ column, tasks }) {
@@ -13,7 +18,7 @@ function Column({ column, tasks }) {
       {provided => (
         <TaskList ref={provided.innerRef} {...provided.droppableProps}>
           {tasks.map((task, index) => (
-            <Task key={task.id} task={task} index={index} />
+            <Task key={task.id} className={task.id} task={task} index={index} />
           ))}
           {provided.placeholder}
         </TaskList>
