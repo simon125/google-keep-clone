@@ -9,6 +9,7 @@ export const NoteListContainer = styled.div`
   margin: 10px;
   max-width: 100vw;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
 `;
 
