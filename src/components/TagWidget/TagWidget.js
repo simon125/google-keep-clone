@@ -43,14 +43,12 @@ function TagWidget({ chosenTags, setTags, tags = [], addTag }) {
       const filteredTags = tags.filter(tag => tag.name.includes(tagName));
       setTagsToDisplay(filteredTags);
     }
-    return subscription();
-  }, [tagName]);
-  useEffect(() => {
     if (noteTags) {
       setTags(noteTags);
       setTagsToDisplay(tags);
     }
-  }, [noteTags]);
+    return () => subscription();
+  }, [tagName, noteTags]);
 
   const handleCheckboxChange = e => {
     const isChecked = e.target.checked;
