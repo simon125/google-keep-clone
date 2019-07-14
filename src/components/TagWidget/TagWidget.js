@@ -14,41 +14,65 @@ import {
 } from "./widget-elements";
 import "./scrollbar.css";
 import { connect } from "react-redux";
-import { addTag } from "../../redux/notes";
+import { addTagToDB } from "../../redux/notes";
 import { store } from "../../redux/storeConfig";
 
-function TagWidget({ chosenTags, setTags, tags = [], addTag }) {
+function TagWidget({
+  chosenTagsForNote,
+  setNewTagsForNote,
+  fetchedTags = [],
+  addTagToDB
+}) {
   const [showWidget, toggleWidget] = useState(false);
-  const [tagName, setTag] = useState("");
-  const [tagsToDisplay, setTagsToDisplay] = useState([...tags]);
-  const [noteTags, setNoteTags] = useState(chosenTags);
+  const [newTagName, setNewTagName] = useState("");
+  const [tagsToDisplay, setNewTagsToDisplay] = useState([...fetchedTags]);
+  const [noteTags, setNoteTags] = useState([...chosenTagsForNote]);
+
+  const handleChange = e => setNewTagName(e.target.value);
 
   const handleSubmit = e => {
     e.preventDefault();
-    const tag = tagName.trim();
-    if (tag !== "" && tags.every(tag => tagName.trim() !== tag.name)) {
-      addTag({ name: tag });
+    const tag = newTagName.trim();
+    if (
+      tag !== "" &&
+      fetchedTags.every(tag => newTagName.trim() !== tag.name)
+    ) {
+      addTagToDB({ name: tag });
       setNoteTags([...noteTags, tag]);
-      setTag("");
+      setNewTagName("");
     }
   };
-  const handleChange = e => setTag(e.target.value);
-
-  const subscription = store.subscribe(() => {
-    setTagsToDisplay(store.getState().notes.tags);
-  });
 
   useEffect(() => {
-    if (tagName.trim() !== "") {
-      const filteredTags = tags.filter(tag => tag.name.includes(tagName));
-      setTagsToDisplay(filteredTags);
+    const subscribe = store.subscribe(() => {
+      setNewTagsToDisplay(store.getState().notes.tags);
+    });
+    if (newTagName.trim() !== "") {
+      const filteredTags = fetchedTags.filter(tag =>
+        tag.name.includes(newTagName)
+      );
+      setNewTagsToDisplay(filteredTags);
     }
-    if (noteTags) {
-      setTags(noteTags);
-      setTagsToDisplay(tags);
-    }
-    return () => subscription();
-  }, [tagName, noteTags]);
+    setNewTagsForNote(noteTags);
+
+    return () => subscribe();
+  }, [newTagName, noteTags]);
+
+  // useEffect(() => {
+  //   const subscribe = store.subscribe(() => {
+  //     const actualTagsNote = store.getState().notes.tags;
+  //     if (newTagName.trim() !== "") {
+  //       const filteredTags = actualTagsNote.filter(tag =>
+  //         tag.name.includes(newTagName)
+  //       );
+  //       setNewTagsToDisplay(filteredTags);
+  //     } else {
+  //       setNewTagsToDisplay(actualTagsNote);
+  //     }
+  //   });
+  //   setNewTagsForNote(noteTags);
+  //   return () => subscribe();
+  // }, [newTagName, noteTags]);
 
   const handleCheckboxChange = e => {
     const isChecked = e.target.checked;
@@ -59,7 +83,7 @@ function TagWidget({ chosenTags, setTags, tags = [], addTag }) {
       setNoteTags(noteTags.filter(noteTag => noteTag !== tag));
     }
   };
-  console.log("render");
+
   return (
     <TagWidgetContainer>
       <Tool onClick={() => toggleWidget(!showWidget)}>
@@ -73,7 +97,7 @@ function TagWidget({ chosenTags, setTags, tags = [], addTag }) {
             style={{ display: "flex", alignItems: "center" }}
           >
             <TagInput
-              value={tagName}
+              value={newTagName}
               onChange={handleChange}
               maxLength="15"
               placeholder="Wpisz nazwę etykiety"
@@ -90,7 +114,7 @@ function TagWidget({ chosenTags, setTags, tags = [], addTag }) {
                 <Checkbox
                   onChange={handleCheckboxChange}
                   value={tag.name}
-                  checked={chosenTags.includes(tag.name)}
+                  checked={chosenTagsForNote.includes(tag.name)}
                   type="checkbox"
                 />
                 <Label>{tag.name}</Label>
@@ -98,10 +122,11 @@ function TagWidget({ chosenTags, setTags, tags = [], addTag }) {
             ))}
           </TagList>
 
-          {tagName !== "" && tags.every(tag => tagName.trim() !== tag.name) ? (
+          {newTagName !== "" &&
+          fetchedTags.every(tag => newTagName.trim() !== tag.name) ? (
             <AddTagBtn onClick={handleSubmit}>
               <span className="fas fa-plus fa-xs" style={{ margin: "0 4px" }} />{" "}
-              Utwórz etykietę "{tagName}"
+              Utwórz etykietę "{newTagName}"
             </AddTagBtn>
           ) : (
             ""
@@ -113,7 +138,7 @@ function TagWidget({ chosenTags, setTags, tags = [], addTag }) {
 }
 
 const mapDispatchToProps = {
-  addTag
+  addTagToDB
 };
 
 export default connect(

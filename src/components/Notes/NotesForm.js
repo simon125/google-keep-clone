@@ -167,9 +167,9 @@ function NotesForm({ addNote, availableTags }) {
             </Tool>
           )}
           <TagWidget
-            tags={availableTags}
-            chosenTags={noteState.tags}
-            setTags={tags => setNoteState({ ...noteState, tags })}
+            fetchedTags={availableTags}
+            chosenTagsForNote={noteState.tags}
+            setNewTagsForNote={tags => setNoteState({ ...noteState, tags })}
           />
           <ColorPicker
             chosenColor={noteState.bgColor}
