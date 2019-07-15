@@ -7,9 +7,16 @@ import {
   TitleField,
   NoteField,
   Tool,
-  Icon
+  Icon,
+  ListContainer,
+  ListItem,
+  ListItemForm,
+  Checkbox,
+  ListItemFormInput
 } from "./notes-elements";
 import "../../images/fontello.css";
+import uuid from "uuid";
+import TextareaAutosize from "react-autosize-textarea";
 
 import { connect } from "react-redux";
 import { addNote } from "../../redux/notes";
@@ -21,12 +28,13 @@ function NotesForm({ addNote, availableTags }) {
   const [noteState, setNoteState] = useState({
     title: "",
     checkList: false,
-    checkListItems: [],
+    checkListItems: {},
     note: "",
     pinned: "",
     tags: [],
     bgColor: "transparent"
   });
+  const [listItemName, setListItemName] = useState("");
   const handlePinClick = () => {
     setNoteState({ ...noteState, pinned: !noteState.pinned });
   };
@@ -37,7 +45,7 @@ function NotesForm({ addNote, availableTags }) {
     setNoteState({
       title: "",
       checkList: false,
-      checkListItems: [],
+      checkListItems: {},
       note: "",
       pinned: "",
       tags: [],
@@ -65,21 +73,51 @@ function NotesForm({ addNote, availableTags }) {
       toggleInput(false);
     }
   };
+  const handleDeleteListItem = e => {
+    const newCheckListItems = {};
+    const currentCheckListItems = { ...noteState.checkListItems };
+
+    for (let prop in currentCheckListItems) {
+      if (prop !== e.target.parentElement.name) {
+        newCheckListItems[prop] = { ...currentCheckListItems[prop] };
+      }
+    }
+    setNoteState({
+      ...noteState,
+      checkListItems: newCheckListItems
+    });
+  };
   useEffect(() => {
+    document.body.addEventListener("click", handleBodyClick);
     if (noteState.note.trim() + noteState.title.trim() !== "") {
+      console.log(noteState);
+      debugger;
+      // noteState.note.split(/\r?\n/)  split string on enter
       addNote(noteState);
     }
     if (!isInputOpen) {
       resetNoteState();
     }
-  }, [isInputOpen]);
-
-  useEffect(() => {
-    document.body.addEventListener("click", handleBodyClick);
     return () => {
       document.body.removeEventListener("click", handleBodyClick);
     };
-  });
+  }, [isInputOpen]);
+
+  const handleSubmit = e => {
+    const uid = uuid();
+    const newNoteState = {
+      ...noteState,
+      checkListItems: {
+        ...noteState.checkListItems,
+        [uid]: {
+          listItemName: e.target.value,
+          uid
+        }
+      }
+    };
+    setNoteState(newNoteState);
+    setListItemName("");
+  };
 
   return (
     <Form className="note-form">
@@ -107,14 +145,68 @@ function NotesForm({ addNote, availableTags }) {
         ""
       )}
       <FormGroup>
-        <NoteField
-          name="note"
-          value={noteState.note}
-          onChange={handleChange}
-          onClick={e => toggleInput(true)}
-          placeholder="Utwórz notatkę..."
-          type="text"
-        />
+        {noteState.checkList ? (
+          <ListContainer>
+            {Object.values(noteState.checkListItems).map((item, i, arr) => (
+              <ListItem key={item.uid}>
+                <span>
+                  <Icon className="fas fa-grip-vertical" />
+                  <Checkbox type="checkbox" />
+                  <ListItemFormInput
+                    autoFocus={i === arr.length - 1}
+                    value={noteState.checkListItems[item.uid].listItemName}
+                    onChange={e =>
+                      setNoteState({
+                        ...noteState,
+                        checkListItems: {
+                          ...noteState.checkListItems,
+                          [item.uid]: {
+                            ...noteState.checkListItems[item.uid],
+                            listItemName: e.target.value
+                          }
+                        }
+                      })
+                    }
+                  />
+                </span>
+                <Tool name={item.uid} onClick={handleDeleteListItem}>
+                  <Icon name={item.uid} className="fas fa-times" />
+                </Tool>
+              </ListItem>
+            ))}
+            {/* <form
+              onSubmit={handleSubmit}
+            > */}
+            <ListItemForm>
+              <Icon className="fas fa-plus" />
+              <ListItemFormInput
+                value={listItemName}
+                onChange={handleSubmit}
+                autoFocus
+                placeholder="Element listy"
+              />
+            </ListItemForm>
+            {/* </form> */}
+          </ListContainer>
+        ) : (
+          // <NoteField
+          //   name="note"
+          //   value={noteState.note}
+          //   onChange={handleChange}
+          //   onClick={e => toggleInput(true)}
+          //   placeholder="Utwórz notatkę..."
+          //   type="text"
+          // />
+          <TextareaAutosize
+            style={{ ...NoteField, resize: "none" }}
+            name="note"
+            value={noteState.note}
+            onChange={handleChange}
+            onClick={e => toggleInput(true)}
+            placeholder="Utwórz notatkę..."
+          />
+        )}
+
         {isInputOpen ? (
           ""
         ) : (
