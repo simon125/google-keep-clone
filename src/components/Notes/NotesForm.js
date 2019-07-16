@@ -155,7 +155,7 @@ function NotesForm({ addNote, availableTags }) {
                   <ListItemFormInput
                     autoFocus={i === arr.length - 1}
                     value={noteState.checkListItems[item.uid].listItemName}
-                    onChange={e =>
+                    onChange={e => {
                       setNoteState({
                         ...noteState,
                         checkListItems: {
@@ -165,8 +165,13 @@ function NotesForm({ addNote, availableTags }) {
                             listItemName: e.target.value
                           }
                         }
-                      })
-                    }
+                      });
+                    }}
+                    onKeyUp={e => {
+                      if (e.key === "Enter") {
+                        document.getElementById("listItemFormInput").focus();
+                      }
+                    }}
                   />
                 </span>
                 <Tool name={item.uid} onClick={handleDeleteListItem}>
@@ -180,6 +185,7 @@ function NotesForm({ addNote, availableTags }) {
             <ListItemForm>
               <Icon className="fas fa-plus" />
               <ListItemFormInput
+                id="listItemFormInput"
                 value={listItemName}
                 onChange={handleSubmit}
                 autoFocus
