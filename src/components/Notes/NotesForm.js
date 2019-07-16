@@ -38,6 +38,46 @@ function NotesForm({ addNote, availableTags }) {
   const handlePinClick = () => {
     setNoteState({ ...noteState, pinned: !noteState.pinned });
   };
+  const handleToggleClick = () => {
+    if (!noteState.checkList) {
+      // console.log("(!noteState.checkList): ", !noteState.checkList);
+      // console.log(
+      //   "noteState.note.split(/\r?\n/): ",
+      //   noteState.note.split(/\r?\n/)
+      // );
+      const newNoteCheckListItems = noteState.note
+        .split(/\r?\n/)
+        .reduce((newCheckList, nameOfListItem) => {
+          const uid = uuid();
+          return {
+            ...newCheckList,
+            [uid]: {
+              listItemName: nameOfListItem,
+              uid
+            }
+          };
+        }, {});
+      // debugger;
+
+      setNoteState({
+        ...noteState,
+        checkList: !noteState.checkList,
+        note: "",
+        checkListItems: newNoteCheckListItems
+      });
+    } else {
+      const newNote = Object.values(noteState.checkListItems)
+        .map(el => el.listItemName)
+        .join("\r\n");
+      // debugger;
+      setNoteState({
+        ...noteState,
+        checkList: !noteState.checkList,
+        note: newNote,
+        checkListItems: {}
+      });
+    }
+  };
   const switchNoteType = () => {
     setNoteState({ ...noteState, checkList: !noteState.checkList });
   };
@@ -89,9 +129,9 @@ function NotesForm({ addNote, availableTags }) {
   };
   useEffect(() => {
     document.body.addEventListener("click", handleBodyClick);
-    if (noteState.note.trim() + noteState.title.trim() !== "") {
-      console.log(noteState);
-      debugger;
+
+    if (!isInputOpen && noteState.note.trim() + noteState.title.trim() !== "") {
+      // debugger;
       // noteState.note.split(/\r?\n/)  split string on enter
       addNote(noteState);
     }
@@ -101,7 +141,7 @@ function NotesForm({ addNote, availableTags }) {
     return () => {
       document.body.removeEventListener("click", handleBodyClick);
     };
-  }, [isInputOpen]);
+  });
 
   const handleSubmit = e => {
     const uid = uuid();
@@ -256,11 +296,11 @@ function NotesForm({ addNote, availableTags }) {
       {isInputOpen ? (
         <FormToolsGroup>
           {noteState.checkList ? (
-            <Tool onClick={switchNoteType}>
+            <Tool onClick={handleToggleClick}>
               <Icon className="far fa-clipboard" />
             </Tool>
           ) : (
-            <Tool onClick={switchNoteType}>
+            <Tool onClick={handleToggleClick}>
               <Icon className="fas fa-list-ul" />
             </Tool>
           )}
