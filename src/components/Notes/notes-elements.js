@@ -7,7 +7,9 @@ export const Form = styled.div`
   margin: 0 auto;
   width: 60%;
   min-height: 60px;
-  background: #fefefe;
+  transition: background 0.2s;
+  background: ${props =>
+    props.bgColor === "transparent" ? "#fefefe" : props.bgColor};
   border-radius: 5px;
   box-shadow: 1px 1px 8px 1px rgba(89, 89, 89, 0.53);
   padding: 20px 0px 6px 0px;

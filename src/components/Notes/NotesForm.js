@@ -17,6 +17,8 @@ import {
 import "../../images/fontello.css";
 import uuid from "uuid";
 import TextareaAutosize from "react-autosize-textarea";
+import { DragDropContext } from "react-beautiful-dnd";
+import { Droppable } from "react-beautiful-dnd";
 
 import { connect } from "react-redux";
 import { addNote } from "../../redux/notes";
@@ -40,14 +42,12 @@ function NotesForm({ addNote, availableTags }) {
   };
   const handleToggleClick = () => {
     if (!noteState.checkList) {
-      // console.log("(!noteState.checkList): ", !noteState.checkList);
-      // console.log(
-      //   "noteState.note.split(/\r?\n/): ",
-      //   noteState.note.split(/\r?\n/)
-      // );
       const newNoteCheckListItems = noteState.note
         .split(/\r?\n/)
         .reduce((newCheckList, nameOfListItem) => {
+          if (nameOfListItem.trim() === "") {
+            return { ...newCheckList };
+          }
           const uid = uuid();
           return {
             ...newCheckList,
@@ -57,7 +57,6 @@ function NotesForm({ addNote, availableTags }) {
             }
           };
         }, {});
-      // debugger;
 
       setNoteState({
         ...noteState,
@@ -69,7 +68,6 @@ function NotesForm({ addNote, availableTags }) {
       const newNote = Object.values(noteState.checkListItems)
         .map(el => el.listItemName)
         .join("\r\n");
-      // debugger;
       setNoteState({
         ...noteState,
         checkList: !noteState.checkList,
@@ -77,9 +75,6 @@ function NotesForm({ addNote, availableTags }) {
         checkListItems: {}
       });
     }
-  };
-  const switchNoteType = () => {
-    setNoteState({ ...noteState, checkList: !noteState.checkList });
   };
   const resetNoteState = () => {
     setNoteState({
@@ -130,9 +125,10 @@ function NotesForm({ addNote, availableTags }) {
   useEffect(() => {
     document.body.addEventListener("click", handleBodyClick);
 
-    if (!isInputOpen && noteState.note.trim() + noteState.title.trim() !== "") {
-      // debugger;
-      // noteState.note.split(/\r?\n/)  split string on enter
+    if (
+      (!isInputOpen && noteState.note.trim() + noteState.title.trim() !== "") ||
+      (!isInputOpen && Object.values(noteState.checkListItems).length > 0)
+    ) {
       addNote(noteState);
     }
     if (!isInputOpen) {
@@ -160,7 +156,7 @@ function NotesForm({ addNote, availableTags }) {
   };
 
   return (
-    <Form className="note-form">
+    <Form bgColor={noteState.bgColor} className="note-form">
       {isInputOpen ? (
         <FormGroup>
           <TitleField
@@ -187,41 +183,44 @@ function NotesForm({ addNote, availableTags }) {
       <FormGroup>
         {noteState.checkList ? (
           <ListContainer>
-            {Object.values(noteState.checkListItems).map((item, i, arr) => (
-              <ListItem key={item.uid}>
-                <span>
-                  <Icon className="fas fa-grip-vertical" />
-                  <Checkbox type="checkbox" />
-                  <ListItemFormInput
-                    autoFocus={i === arr.length - 1}
-                    value={noteState.checkListItems[item.uid].listItemName}
-                    onChange={e => {
-                      setNoteState({
-                        ...noteState,
-                        checkListItems: {
-                          ...noteState.checkListItems,
-                          [item.uid]: {
-                            ...noteState.checkListItems[item.uid],
-                            listItemName: e.target.value
+            <DragDropContext onDragEnd={() => {}}>
+              {Object.values(noteState.checkListItems).map((item, i, arr) => (
+                <Droppable droppableId={column.id}>
+                  <ListItem key={item.uid}>
+                    <span>
+                      <Icon className="fas fa-grip-vertical" />
+                      <Checkbox type="checkbox" />
+                      <ListItemFormInput
+                        autoFocus={i === arr.length - 1}
+                        value={noteState.checkListItems[item.uid].listItemName}
+                        onChange={e => {
+                          setNoteState({
+                            ...noteState,
+                            checkListItems: {
+                              ...noteState.checkListItems,
+                              [item.uid]: {
+                                ...noteState.checkListItems[item.uid],
+                                listItemName: e.target.value
+                              }
+                            }
+                          });
+                        }}
+                        onKeyUp={e => {
+                          if (e.key === "Enter") {
+                            document
+                              .getElementById("listItemFormInput")
+                              .focus();
                           }
-                        }
-                      });
-                    }}
-                    onKeyUp={e => {
-                      if (e.key === "Enter") {
-                        document.getElementById("listItemFormInput").focus();
-                      }
-                    }}
-                  />
-                </span>
-                <Tool name={item.uid} onClick={handleDeleteListItem}>
-                  <Icon name={item.uid} className="fas fa-times" />
-                </Tool>
-              </ListItem>
-            ))}
-            {/* <form
-              onSubmit={handleSubmit}
-            > */}
+                        }}
+                      />
+                    </span>
+                    <Tool name={item.uid} onClick={handleDeleteListItem}>
+                      <Icon name={item.uid} className="fas fa-times" />
+                    </Tool>
+                  </ListItem>
+                </Droppable>
+              ))}
+            </DragDropContext>
             <ListItemForm>
               <Icon className="fas fa-plus" />
               <ListItemFormInput
@@ -232,17 +231,8 @@ function NotesForm({ addNote, availableTags }) {
                 placeholder="Element listy"
               />
             </ListItemForm>
-            {/* </form> */}
           </ListContainer>
         ) : (
-          // <NoteField
-          //   name="note"
-          //   value={noteState.note}
-          //   onChange={handleChange}
-          //   onClick={e => toggleInput(true)}
-          //   placeholder="Utwórz notatkę..."
-          //   type="text"
-          // />
           <TextareaAutosize
             style={{ ...NoteField, resize: "none" }}
             name="note"
@@ -304,6 +294,8 @@ function NotesForm({ addNote, availableTags }) {
               <Icon className="fas fa-list-ul" />
             </Tool>
           )}
+
+          <Tool className="fas fa-list-ul" onClick={() => console.log(123)} />
           <TagWidget
             fetchedTags={availableTags}
             chosenTagsForNote={noteState.tags}

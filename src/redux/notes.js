@@ -19,7 +19,6 @@ export const getNotes = notes => {
   };
 };
 export const addTagToDB = tag => (dispatch, getState) => {
-  console.log("addTag: ", tag);
   db.collection("tags")
     .add(tag)
     .then(() => {
