@@ -186,6 +186,17 @@ function NotesForm({ addNote, availableTags }) {
             <DragDropContext onDragEnd={() => {}}>
               {Object.values(noteState.checkListItems).map((item, i, arr) => (
                 <Droppable droppableId={column.id}>
+                  {provided => (
+                    <TaskList
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                    >
+                      {tasks.map((task, index) => (
+                        <Task key={task.id} task={task} index={index} />
+                      ))}
+                      {provided.placeholder}
+                    </TaskList>
+                  )}
                   <ListItem key={item.uid}>
                     <span>
                       <Icon className="fas fa-grip-vertical" />
