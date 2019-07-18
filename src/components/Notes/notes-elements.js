@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const NotesContainer = styled.section`
   height: 75vh;
 `;
-export const Form = styled.div`
+export const FormContainer = styled.div`
   margin: 0 auto;
   width: 60%;
   min-height: 60px;
