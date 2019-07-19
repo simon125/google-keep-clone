@@ -77,6 +77,7 @@ function FormNoteList({ noteState, setNoteState, handleDeleteListItem }) {
             [prop]: noteState.checkListItems[prop]
           };
         }
+        setNoteState({ ...noteState, checkListItems: newNoteState });
         debugger;
       }}
     >

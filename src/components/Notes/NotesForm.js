@@ -94,7 +94,7 @@ function NotesForm({ addNote, availableTags }) {
     const currentCheckListItems = { ...noteState.checkListItems };
     debugger;
     for (let prop in currentCheckListItems) {
-      if (prop !== e.target.parentElement.name) {
+      if (prop !== e.target.name) {
         newCheckListItems[prop] = { ...currentCheckListItems[prop] };
       }
     }
