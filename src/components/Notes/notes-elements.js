@@ -34,6 +34,7 @@ export const Icon = styled.span`
 export const Tool = styled.button`
   color: #666;
   border: none;
+  margin-right: 15px;
   background: transparent;
   outline: none;
   cursor: pointer;
@@ -97,6 +98,7 @@ export const ListItem = styled.li`
   display: flex;
   justify-content: space-between;
   padding: 10px 10px;
+  background: inherit;
   ${Icon} {
     transition: opacity 0.1s;
     opacity: 0;
@@ -111,6 +113,7 @@ export const ListItemForm = styled.li`
   padding: 10px 35px;
   width: 100%;
   display: flex;
+  background: transparent;
 `;
 export const Checkbox = styled.input`
   margin-right: 10px;
@@ -119,4 +122,5 @@ export const ListItemFormInput = styled.input`
   border: none;
   outline: none;
   flex-grow: 1;
+  background: transparent;
 `;

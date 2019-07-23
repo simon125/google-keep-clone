@@ -52,6 +52,8 @@ function TagWidget({
         tag.name.includes(newTagName)
       );
       setNewTagsToDisplay(filteredTags);
+    } else {
+      setNewTagsToDisplay(fetchedTags);
     }
     setNewTagsForNote(noteTags);
 
