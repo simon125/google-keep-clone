@@ -50,35 +50,39 @@ function FormNoteList({ noteState, setNoteState, handleDeleteListItem }) {
   return (
     <DragDropContext
       onDragEnd={result => {
-        if (!result.destination) {
+        if (
+          !result.destination ||
+          result.destination.index === result.source.index
+        ) {
           return;
         }
 
         console.log(result);
-        let newNoteState = {};
-        const uidOfDestination = Object.values(noteState.checkListItems)[
-          result.destination.index
-        ];
-        const uidOfSource = result.draggableId;
+        let newCheckListItems = {};
+        const draggableId = result.draggableId;
+        const destinationIndex = result.destination.index;
+        let index = 0;
+        // debugger;
         for (let prop in noteState.checkListItems) {
-          if (prop === uidOfDestination) {
-            newNoteState = {
-              ...newNoteState,
-              [uidOfSource]: noteState.checkListItems[uidOfSource],
-              ...noteState
+          if (prop === draggableId) continue;
+          if (index === destinationIndex) {
+            newCheckListItems = {
+              ...newCheckListItems,
+              [draggableId]: {
+                ...noteState.checkListItems[draggableId]
+              }
             };
-            break;
           }
-          if (prop === uidOfDestination) {
-            continue;
-          }
-          newNoteState = {
-            ...newNoteState,
-            [prop]: noteState.checkListItems[prop]
+          newCheckListItems = {
+            ...newCheckListItems,
+            [prop]: {
+              ...noteState.checkListItems[prop]
+            }
           };
+          index++;
         }
-        setNoteState({ ...noteState, checkListItems: newNoteState });
-        debugger;
+        setNoteState({ ...noteState, checkListItems: newCheckListItems });
+        // debugger;
       }}
     >
       <Droppable droppableId="droppable">
@@ -115,7 +119,7 @@ function FormNoteList({ noteState, setNoteState, handleDeleteListItem }) {
               </Draggable>
             ))}
 
-            <ListItemForm>
+            <ListItemForm marginPlaceholder={snapshot.isDraggingOver}>
               <Icon className="fas fa-plus" />
               <ListItemFormInput
                 id="listItemFormInput"

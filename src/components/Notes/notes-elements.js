@@ -106,6 +106,13 @@ export const ListItem = styled.li`
   &:hover ${Icon} {
     opacity: 1;
   }
+  ${Tool} {
+    transition: opacity 0.1s;
+    opacity: 0;
+  }
+  &:hover ${Tool} {
+    opacity: 1;
+  }
 `;
 export const ListItemForm = styled.li`
   border-top: 1px solid rgba(200, 200, 200, 0.9);
@@ -114,6 +121,7 @@ export const ListItemForm = styled.li`
   width: 100%;
   display: flex;
   background: transparent;
+  margin-top: ${props => (props.marginPlaceholder ? "38px" : 0)};
 `;
 export const Checkbox = styled.input`
   margin-right: 10px;
