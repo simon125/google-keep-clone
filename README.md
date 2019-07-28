@@ -5,9 +5,9 @@
 By doing it, I'm trying to clone the UI almost in 100%(from. list of notes, panel for searching) without bunch of features,
 Project for me is some kind of challange, sandbox for new features/packages/compoennts, and playground for good practise for react which I'm looking for in docs/medium/tutorials.
 
-## Check this out
+### Live demo
 
-You can easyli track my progress [here](https://keep-clone-app.firebaseapp.com/)
+You can easyli check the current version [here](https://keep-clone-app.firebaseapp.com/)
 
 
 ## Tech
