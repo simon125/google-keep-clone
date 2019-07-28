@@ -5,9 +5,9 @@ import { Droppable } from "react-beautiful-dnd";
 
 const TaskList = styled.div`
   padding: 8px;
+  margin-top: 10px;
   background: #eee;
-  margin: 10px 20px;
-  width: 30vw;
+  width: 250px;
   display: flex;
   flex-direction: column;
 `;

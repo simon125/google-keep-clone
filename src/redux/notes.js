@@ -6,7 +6,7 @@ const GET_NOTES = "GET_NOTES";
 const GET_TAGS = "GET_TAGS";
 
 export const addNote = note => (dispatch, getState) => {
-  db.collection("test1")
+  db.collection("notes")
     .add(note)
     .then(() => {
       console.warn("added note");

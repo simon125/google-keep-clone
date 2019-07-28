@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 import Handle from "./Handle";
 const Container = styled.div`
-  flex-grow: 1;
   border: 1px solid lightgrey;
   border-radius: 4px;
   padding: 8px;
