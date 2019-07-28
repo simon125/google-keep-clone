@@ -8,6 +8,7 @@
     "normalize.css": "^8.0.1",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
+    "react-autosize-textarea": "^7.0.0",
     "react-beautiful-dnd": "^11.0.4",
     "react-dom": "^16.8.6",
     "react-grid-layout": "^0.16.6",
@@ -18,6 +19,7 @@
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
     "styled-components": "^4.3.1",
+    "uuid": "^3.3.2",
     "yup": "^0.27.0"
   },
   "scripts": {

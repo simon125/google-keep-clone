@@ -1,56 +1,76 @@
 import React, { useState, useEffect } from "react";
 import {
-  Form,
+  FormContainer,
   FormGroup,
-  FormToolsGroup,
-  CloseBtn,
   TitleField,
   NoteField,
-  Tool,
-  Icon
+  Tool
 } from "./notes-elements";
-import "../../images/fontello.css";
-
+import FormNoteList from "../FormNoteList/FormNoteList";
+import TagList from "../TagList/TagList";
+import NotesFormFooter from "../NotesFormFooter/NotesFormFooter";
+import uuid from "uuid";
+import TextareaAutosize from "react-autosize-textarea";
 import { connect } from "react-redux";
 import { addNote } from "../../redux/notes";
-import ColorPicker from "../ColorPicker/ColorPicker";
-import TagWidget from "../TagWidget/TagWidget";
 
 function NotesForm({ addNote, availableTags }) {
-  const [isInputOpen, toggleInput] = useState(false);
-  const [noteState, setNoteState] = useState({
+  const initialNoteState = {
     title: "",
     checkList: false,
-    checkListItems: [],
+    checkListItems: {},
     note: "",
     pinned: "",
     tags: [],
     bgColor: "transparent"
-  });
-  const handlePinClick = () => {
-    setNoteState({ ...noteState, pinned: !noteState.pinned });
   };
-  const switchNoteType = () => {
-    setNoteState({ ...noteState, checkList: !noteState.checkList });
+
+  const [isInputOpen, toggleInput] = useState(false);
+  const [noteState, setNoteState] = useState({ ...initialNoteState });
+
+  const getListBasedOnLineTextBreak = text => {
+    return text.split(/\r?\n/).reduce((newCheckList, nameOfListItem) => {
+      const uid = uuid();
+      return nameOfListItem.trim() === ""
+        ? { ...newCheckList }
+        : {
+            ...newCheckList,
+            [uid]: {
+              listItemName: nameOfListItem,
+              uid
+            }
+          };
+    }, {});
   };
-  const resetNoteState = () => {
+
+  const handleToggleClick = () => {
+    const newNoteState = { ...noteState, checkList: !noteState.checkList };
+    let newNote = "",
+      newNoteCheckListItems = {};
+
+    if (noteState.checkList) {
+      newNote = Object.values(noteState.checkListItems)
+        .map(el => el.listItemName)
+        .join("\r\n");
+    } else {
+      newNoteCheckListItems = getListBasedOnLineTextBreak(noteState.note);
+    }
     setNoteState({
-      title: "",
-      checkList: false,
-      checkListItems: [],
-      note: "",
-      pinned: "",
-      tags: [],
-      bgColor: "transparent"
+      ...newNoteState,
+      note: newNote,
+      checkListItems: newNoteCheckListItems
     });
   };
+
   const handleCloseClick = () => {
-    resetNoteState();
+    setNoteState({ ...initialNoteState });
     toggleInput(false);
   };
+
   const handleChange = e => {
     setNoteState({ ...noteState, [e.target.name]: e.target.value });
   };
+
   const checkIfTargetIsForm = target => {
     if (!target) return false;
     const className = target.className;
@@ -59,128 +79,102 @@ function NotesForm({ addNote, availableTags }) {
     }
     return checkIfTargetIsForm(target.parentElement);
   };
+
   const handleBodyClick = e => {
     const targetIsForm = checkIfTargetIsForm(e.target);
     if (!targetIsForm) {
       toggleInput(false);
     }
   };
+  const handlePinClick = () =>
+    setNoteState({ ...noteState, pinned: !noteState.pinned });
+
+  const handleDeleteListItem = e => {
+    const newCheckListItems = {};
+    const currentCheckListItems = { ...noteState.checkListItems };
+    debugger;
+    for (let prop in currentCheckListItems) {
+      if (prop !== e.target.name) {
+        newCheckListItems[prop] = { ...currentCheckListItems[prop] };
+      }
+    }
+    setNoteState({
+      ...noteState,
+      checkListItems: newCheckListItems
+    });
+  };
+
   useEffect(() => {
-    if (noteState.note.trim() + noteState.title.trim() !== "") {
+    document.body.addEventListener("mousedown", handleBodyClick);
+    if (
+      (!isInputOpen && noteState.note.trim() + noteState.title.trim() !== "") ||
+      (!isInputOpen && Object.values(noteState.checkListItems).length > 0)
+    ) {
       addNote(noteState);
     }
     if (!isInputOpen) {
-      resetNoteState();
+      setNoteState({ ...initialNoteState });
     }
-  }, [isInputOpen]);
-
-  useEffect(() => {
-    document.body.addEventListener("click", handleBodyClick);
     return () => {
-      document.body.removeEventListener("click", handleBodyClick);
+      document.body.removeEventListener("mousedown", handleBodyClick);
     };
   });
 
   return (
-    <Form className="note-form">
-      {isInputOpen ? (
+    <FormContainer bgColor={noteState.bgColor} className="note-form">
+      {isInputOpen && (
         <FormGroup>
           <TitleField
             name="title"
             value={noteState.title}
             onChange={handleChange}
-            onClick={e => toggleInput(true)}
             placeholder="Tytuł"
-            type="text"
           />
-          {noteState.pinned ? (
-            <Tool onClick={handlePinClick}>
-              <Icon className="icon-pin" />
-            </Tool>
-          ) : (
-            <Tool onClick={handlePinClick}>
-              <Icon className="icon-pin-outline" />
-            </Tool>
-          )}
+          <Tool
+            className={noteState.pinned ? "icon-pin" : "icon-pin-outline"}
+            onClick={handlePinClick}
+          />
         </FormGroup>
-      ) : (
-        ""
       )}
       <FormGroup>
-        <NoteField
-          name="note"
-          value={noteState.note}
-          onChange={handleChange}
-          onClick={e => toggleInput(true)}
-          placeholder="Utwórz notatkę..."
-          type="text"
-        />
-        {isInputOpen ? (
-          ""
+        {noteState.checkList ? (
+          <FormNoteList
+            noteState={noteState}
+            setNoteState={setNoteState}
+            handleDeleteListItem={handleDeleteListItem}
+          />
         ) : (
+          <TextareaAutosize
+            style={{ ...NoteField, resize: "none" }}
+            name="note"
+            value={noteState.note}
+            onChange={handleChange}
+            onClick={() => toggleInput(true)}
+            placeholder="Utwórz notatkę..."
+          />
+        )}
+        {!isInputOpen && (
           <Tool
+            className="far fa-check-square fa-lg"
             onClick={() => {
               setNoteState({ ...noteState, checkList: true });
               toggleInput(true);
             }}
-          >
-            <Icon className="far fa-check-square fa-lg" />
-          </Tool>
+          />
         )}
       </FormGroup>
-      <div>
-        <ul style={{ display: "flex", listStyle: "none", flexWrap: "wrap" }}>
-          {noteState.tags.map(tag => (
-            <li
-              style={{
-                color: "#666",
-                background: "rgb(240,240,240)",
-                borderRadius: "20px",
-                padding: "3px 7px",
-                margin: "5px 2px"
-              }}
-              key={tag}
-            >
-              {tag}
-              <span
-                style={{ marginLeft: "2px", cursor: "pointer" }}
-                onClick={() => {
-                  const newTags = noteState.tags.filter(el => el !== tag);
-                  setNoteState({ ...noteState, tags: newTags });
-                }}
-              >
-                &times;
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
-      {isInputOpen ? (
-        <FormToolsGroup>
-          {noteState.checkList ? (
-            <Tool onClick={switchNoteType}>
-              <Icon className="far fa-clipboard" />
-            </Tool>
-          ) : (
-            <Tool onClick={switchNoteType}>
-              <Icon className="fas fa-list-ul" />
-            </Tool>
-          )}
-          <TagWidget
-            tags={availableTags}
-            chosenTags={noteState.tags}
-            setTags={tags => setNoteState({ ...noteState, tags })}
-          />
-          <ColorPicker
-            chosenColor={noteState.bgColor}
-            setColor={bgColor => setNoteState({ ...noteState, bgColor })}
-          />
-          <CloseBtn onClick={handleCloseClick}>Zamknij</CloseBtn>
-        </FormToolsGroup>
-      ) : (
-        ""
+      <TagList noteState={noteState} setNoteState={setNoteState} />
+
+      {isInputOpen && (
+        <NotesFormFooter
+          noteState={noteState}
+          setNoteState={setNoteState}
+          handleCloseClick={handleCloseClick}
+          handleToggleClick={handleToggleClick}
+          availableTags={availableTags}
+        />
       )}
-    </Form>
+    </FormContainer>
   );
 }
 

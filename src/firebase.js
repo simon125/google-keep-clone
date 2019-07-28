@@ -96,7 +96,7 @@ export const signOut = () => {
 
 export const db = firebase.firestore();
 
-db.collection("test1").onSnapshot(
+db.collection("notes").onSnapshot(
   snapshot => {
     const notes = [];
     snapshot.forEach(el => {

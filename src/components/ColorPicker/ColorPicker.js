@@ -50,14 +50,17 @@ function ColorPicker({ setColor, chosenColor = "transparent" }) {
   const [hideTime, setHideTime] = useState(null);
   const colors = [
     "transparent",
-    "#32CD32",
-    "#FFA500",
-    "#FF0000",
-    "#00BFFF",
-    "#1E90FF",
-    "#7B68EE",
-    "#EE82EE",
-    "#778899"
+    "#f28b82",
+    "#fbbc04",
+    "#fff475",
+    "#ccff90",
+    "#a7ffeb",
+    "#cbf0f8",
+    "#aecbfa",
+    "#d7aefb",
+    "#fdcfe8",
+    "#e6c9a8",
+    "#e8eaed"
   ];
   return (
     <ColorPickerContainer>

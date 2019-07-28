@@ -18,8 +18,7 @@ export const getNotes = notes => {
     payload: notes
   };
 };
-export const addTag = tag => (dispatch, getState) => {
-  console.log("addTag: ", tag);
+export const addTagToDB = tag => (dispatch, getState) => {
   db.collection("tags")
     .add(tag)
     .then(() => {
