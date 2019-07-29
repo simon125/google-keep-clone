@@ -64,7 +64,6 @@ function FormNoteList({ noteState, setNoteState, handleDeleteListItem }) {
         let index = 0;
         // debugger;
         for (let prop in noteState.checkListItems) {
-          if (prop === draggableId) continue;
           if (index === destinationIndex) {
             newCheckListItems = {
               ...newCheckListItems,
@@ -73,6 +72,7 @@ function FormNoteList({ noteState, setNoteState, handleDeleteListItem }) {
               }
             };
           }
+          if (prop === draggableId) continue;
           newCheckListItems = {
             ...newCheckListItems,
             [prop]: {
@@ -82,15 +82,18 @@ function FormNoteList({ noteState, setNoteState, handleDeleteListItem }) {
           index++;
         }
         setNoteState({ ...noteState, checkListItems: newCheckListItems });
-        // debugger;
+        debugger;
       }}
     >
       <Droppable droppableId="droppable">
-        {(provided, snapshot) => (
-          <ListContainer {...provided.droppableProps} ref={provided.innerRef}>
+        {(droppableProvided, droppableSnapshot) => (
+          <ListContainer
+            {...droppableProvided.droppableProps}
+            ref={droppableProvided.innerRef}
+          >
             {Object.values(noteState.checkListItems).map((item, i, arr) => (
               <Draggable key={item.uid} draggableId={item.uid} index={i}>
-                {(provided, snapshot) => (
+                {(provided, draggableSnapshot) => (
                   <ListItem
                     {...provided.draggableProps}
                     ref={provided.innerRef}
@@ -119,7 +122,9 @@ function FormNoteList({ noteState, setNoteState, handleDeleteListItem }) {
               </Draggable>
             ))}
 
-            <ListItemForm marginPlaceholder={snapshot.isDraggingOver}>
+            <ListItemForm
+              marginPlaceholder={droppableSnapshot.draggingFromThisWith}
+            >
               <Icon className="fas fa-plus" />
               <ListItemFormInput
                 id="listItemFormInput"
