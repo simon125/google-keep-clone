@@ -1,3 +1,5 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/36bcb079a45541aea75ad47e84627227)](https://www.codacy.com/app/simon125/google-keep-clone?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=simon125/google-keep-clone&amp;utm_campaign=Badge_Grade)
+
 # Google keep clone
 
 ### Google keep clone is a clone of well known service from google for notes/tasks and much more.
