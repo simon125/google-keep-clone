@@ -6,7 +6,10 @@ import {
   GoogleBtn,
   FormHeader
 } from "./common-elements";
-import { signInWithGoogle, signInWithFacebook } from "../../firebase";
+import {
+  signInWithGoogle,
+  signInWithFacebook
+} from "../../firebase/firebaseAuth";
 
 function SocialsAuth() {
   return (

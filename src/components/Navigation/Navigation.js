@@ -12,7 +12,7 @@ import {
 } from "./navigation-elements";
 import { Link } from "react-router-dom";
 import { Icon } from "../../UI/theme";
-import { signOut } from "../../firebase";
+import { signOut } from "../../firebase/firebaseAuth";
 
 function DesktopNav() {
   return (

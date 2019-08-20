@@ -12,7 +12,7 @@ import {
   InputErrMsg
 } from "./common-elements";
 import { Card } from "../../UI/theme";
-import { signInWithEmailAndPassword } from "../../firebase";
+import { signInWithEmailAndPassword } from "../../firebase/firebaseAuth";
 
 const RememberMeSection = styled.div`
   margin-top: 10px;

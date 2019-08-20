@@ -10,7 +10,7 @@ import {
   InputErrMsg
 } from "./common-elements";
 import { Card } from "../../UI/theme";
-import { createUserWithEmailAndPassword } from "../../firebase";
+import { createUserWithEmailAndPassword } from "../../firebase/firebaseAuth";
 
 function RegisterForm() {
   const [signUpState] = useState({
