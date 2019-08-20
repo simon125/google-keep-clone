@@ -14,14 +14,14 @@ import {
 } from "./widget-elements";
 import "./scrollbar.css";
 import { connect } from "react-redux";
-import { addTagToDB } from "../../redux/notes";
+import { addTag } from "../../redux/notes";
 import { store } from "../../redux/storeConfig";
 
 function TagWidget({
   chosenTagsForNote,
   setNewTagsForNote,
   fetchedTags = [],
-  addTagToDB
+  addTag
 }) {
   const [showWidget, toggleWidget] = useState(false);
   const [newTagName, setNewTagName] = useState("");
@@ -37,7 +37,7 @@ function TagWidget({
       tag !== "" &&
       fetchedTags.every(tag => newTagName.trim() !== tag.name)
     ) {
-      addTagToDB({ name: tag });
+      addTag({ name: tag });
       setNoteTags([...noteTags, tag]);
       setNewTagName("");
     }
@@ -140,7 +140,7 @@ function TagWidget({
 }
 
 const mapDispatchToProps = {
-  addTagToDB
+  addTag
 };
 
 export default connect(
