@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
-import Handle from "./Handle";
 const Container = styled.div`
   border: 1px solid lightgrey;
   border-radius: 4px;
@@ -15,6 +14,7 @@ const Container = styled.div`
 `;
 
 function Task({ task, index }) {
+  console.log(task, index);
   return (
     <Draggable draggableId={task.id} index={index}>
       {(provided, snapshot) => (
@@ -24,7 +24,7 @@ function Task({ task, index }) {
           {...provided.dragHandleProps}
           ref={provided.innerRef}
         >
-          {task.content}
+          {task.note}
         </Container>
       )}
     </Draggable>

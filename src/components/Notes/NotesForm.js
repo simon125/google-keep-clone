@@ -22,7 +22,8 @@ function NotesForm({ addNote, availableTags }) {
     note: "",
     pinned: "",
     tags: [],
-    bgColor: "transparent"
+    bgColor: "transparent",
+    colNumber: 1
   };
 
   const [isInputOpen, toggleInput] = useState(false);

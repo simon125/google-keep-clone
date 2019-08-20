@@ -5,11 +5,11 @@ import { getNotes, getTags } from "../redux/notes";
 
 const db = app.firestore();
 
-db.collection("notes").onSnapshot(
+db.collection("test1").onSnapshot(
   snapshot => {
-    const notes = [];
+    const notes = {};
     snapshot.forEach(el => {
-      notes.push({ ...el.data(), id: el.id });
+      notes[el.id] = { ...el.data(), id: el.id };
     });
     store.dispatch(getNotes(notes));
   },
@@ -32,7 +32,7 @@ db.collection("tags").onSnapshot(
 
 export const addNoteToDB = note => {
   return db
-    .collection("notes")
+    .collection("test1")
     .add(note)
     .then(() => {
       console.warn("added note");
