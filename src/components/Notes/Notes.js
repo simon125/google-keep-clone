@@ -7,7 +7,7 @@ function Notes() {
   return (
     <NotesContainer>
       <NotesForm />
-      <NotesList />
+      {/* <NotesList /> */}
     </NotesContainer>
   );
 }

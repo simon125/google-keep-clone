@@ -13,6 +13,7 @@ import uuid from "uuid";
 import TextareaAutosize from "react-autosize-textarea";
 import { connect } from "react-redux";
 import { addNote } from "../../redux/notes";
+import { arePhrasesEmpty } from "../../utils";
 
 function NotesForm({ addNote, availableTags }) {
   const initialNoteState = {
@@ -25,7 +26,6 @@ function NotesForm({ addNote, availableTags }) {
     bgColor: "transparent",
     colNumber: 1
   };
-
   const [isInputOpen, toggleInput] = useState(false);
   const [noteState, setNoteState] = useState({ ...initialNoteState });
 
@@ -91,14 +91,8 @@ function NotesForm({ addNote, availableTags }) {
     setNoteState({ ...noteState, pinned: !noteState.pinned });
 
   const handleDeleteListItem = e => {
-    const newCheckListItems = {};
-    const currentCheckListItems = { ...noteState.checkListItems };
-    debugger;
-    for (let prop in currentCheckListItems) {
-      if (prop !== e.target.name) {
-        newCheckListItems[prop] = { ...currentCheckListItems[prop] };
-      }
-    }
+    const newCheckListItems = { ...noteState.checkListItems };
+    delete newCheckListItems[e.target.name];
     setNoteState({
       ...noteState,
       checkListItems: newCheckListItems
@@ -108,9 +102,10 @@ function NotesForm({ addNote, availableTags }) {
   useEffect(() => {
     document.body.addEventListener("mousedown", handleBodyClick);
     if (
-      (!isInputOpen && noteState.note.trim() + noteState.title.trim() !== "") ||
+      (!isInputOpen && false) ||
       (!isInputOpen && Object.values(noteState.checkListItems).length > 0)
     ) {
+      console.log("dodałem");
       addNote(noteState);
     }
     if (!isInputOpen) {

@@ -60,7 +60,6 @@ function NoteList({ notes }) {
         }
       });
     });
-    debugger;
     return () => {
       subscription();
     };
