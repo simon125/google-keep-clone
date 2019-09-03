@@ -1,32 +1,25 @@
 import React from "react";
 import TagWidget from "../TagWidget/TagWidget";
 import ColorPicker from "../ColorPicker/ColorPicker";
-import { FormToolsGroup, CloseBtn, Tool } from "../Notes/notes-elements";
+import { FormToolsGroup, CloseBtn, IconButton } from "../Notes/notes-elements";
 
 function NotesFormFooter({
-  noteState,
-  setNoteState,
+  chosenTags,
+  setTags,
+  bgColor,
+  setBgColor,
   handleToggleClick,
   handleCloseClick,
-  availableTags
+  noteEditorMode
 }) {
   return (
     <FormToolsGroup>
-      {noteState.checkList ? (
-        <Tool className="far fa-clipboard" onClick={handleToggleClick} />
-      ) : (
-        <Tool className="fas fa-list-ul" onClick={handleToggleClick} />
-      )}
-
-      <TagWidget
-        fetchedTags={availableTags}
-        chosenTagsForNote={noteState.tags}
-        setNewTagsForNote={tags => setNoteState({ ...noteState, tags })}
+      <IconButton
+        className={noteEditorMode ? "far fa-clipboard" : "fas fa-list-ul"}
+        onClick={handleToggleClick}
       />
-      <ColorPicker
-        chosenColor={noteState.bgColor}
-        setColor={bgColor => setNoteState({ ...noteState, bgColor })}
-      />
+      <TagWidget chosenTags={chosenTags} setTags={setTags} />
+      <ColorPicker chosenColor={bgColor} setBgColor={setBgColor} />
       <CloseBtn onClick={handleCloseClick}>Zamknij</CloseBtn>
     </FormToolsGroup>
   );

@@ -45,7 +45,7 @@ const ColorPickerContainer = styled.div`
   position: relative;
 `;
 
-function ColorPicker({ setColor, chosenColor = "transparent" }) {
+function ColorPicker({ setBgColor, chosenColor = "transparent" }) {
   const [showPallette, togglePallette] = useState(false);
   const [hideTime, setHideTime] = useState(null);
   const colors = [
@@ -82,7 +82,7 @@ function ColorPicker({ setColor, chosenColor = "transparent" }) {
           onMouseLeave={() => togglePallette(false)}
         >
           {colors.map((color, index) => (
-            <Color onClick={() => setColor(color)} key={index} color={color}>
+            <Color onClick={() => setBgColor(color)} key={index} color={color}>
               {chosenColor === color ? (
                 <Icon color="#ccc" className="fas fa-check" />
               ) : (

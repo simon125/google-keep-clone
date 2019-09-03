@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import {
-  Tool,
+  IconButton,
   Icon,
   ListContainer,
   ListItem,
@@ -12,33 +12,26 @@ import uuid from "uuid";
 
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
-function FormNoteList({ noteState, setNoteState, handleDeleteListItem }) {
-  const [listItemName, setListItemName] = useState("");
-
+function FormNoteList({ checkList, setCheckList, deleteListItem }) {
+  const [listItem, setListItem] = useState("");
   const handleSubmit = e => {
     const uid = uuid();
-    const newNoteState = {
-      ...noteState,
-      checkListItems: {
-        ...noteState.checkListItems,
-        [uid]: {
-          listItemName: e.target.value,
-          uid
-        }
+    const newCheckList = {
+      ...checkList,
+      [uid]: {
+        listItem: e.target.value,
+        uid
       }
     };
-    setNoteState(newNoteState);
-    setListItemName("");
+    setCheckList(newCheckList);
+    setListItem("");
   };
   const handleChange = (e, item) => {
-    setNoteState({
-      ...noteState,
-      checkListItems: {
-        ...noteState.checkListItems,
-        [item.uid]: {
-          ...noteState.checkListItems[item.uid],
-          listItemName: e.target.value
-        }
+    setCheckList({
+      ...checkList,
+      [item.uid]: {
+        ...checkList[item.uid],
+        listItem: e.target.value
       }
     });
   };
@@ -58,37 +51,37 @@ function FormNoteList({ noteState, setNoteState, handleDeleteListItem }) {
         }
 
         console.log(result);
-        let newCheckListItems = {};
+        let newCheckList = {};
         const draggableId = result.draggableId;
         const destinationIndex = result.destination.index;
         let index = 0;
         // debugger;
-        for (let prop in noteState.checkListItems) {
+        for (let prop in checkList) {
           if (prop === draggableId) continue;
           if (index === destinationIndex) {
-            newCheckListItems = {
-              ...newCheckListItems,
+            newCheckList = {
+              ...newCheckList,
               [draggableId]: {
-                ...noteState.checkListItems[draggableId]
+                ...checkList[draggableId]
               }
             };
           }
-          newCheckListItems = {
-            ...newCheckListItems,
+          newCheckList = {
+            ...newCheckList,
             [prop]: {
-              ...noteState.checkListItems[prop]
+              ...checkList[prop]
             }
           };
           index++;
         }
-        setNoteState({ ...noteState, checkListItems: newCheckListItems });
-        // debugger;
+        setCheckList(newCheckList);
+        debugger;
       }}
     >
       <Droppable droppableId="droppable">
         {(provided, snapshot) => (
           <ListContainer {...provided.droppableProps} ref={provided.innerRef}>
-            {Object.values(noteState.checkListItems).map((item, i, arr) => (
+            {Object.values(checkList).map((item, i, arr) => (
               <Draggable key={item.uid} draggableId={item.uid} index={i}>
                 {(provided, snapshot) => (
                   <ListItem
@@ -104,26 +97,26 @@ function FormNoteList({ noteState, setNoteState, handleDeleteListItem }) {
                       <Checkbox type="checkbox" />
                       <ListItemFormInput
                         autoFocus={i === arr.length - 1}
-                        value={noteState.checkListItems[item.uid].listItemName}
+                        value={checkList[item.uid].listItem}
                         onChange={e => handleChange(e, item)}
                         onKeyUp={handleKeyUp}
                       />
                     </span>
-                    <Tool
+                    <IconButton
                       name={item.uid}
                       className="fas fa-times"
-                      onClick={handleDeleteListItem}
+                      onClick={deleteListItem}
                     />
                   </ListItem>
                 )}
               </Draggable>
             ))}
-
+            {provided.placeholder}
             <ListItemForm marginPlaceholder={snapshot.isDraggingOver}>
               <Icon className="fas fa-plus" />
               <ListItemFormInput
                 id="listItemFormInput"
-                value={listItemName}
+                value={listItem}
                 onChange={handleSubmit}
                 autoFocus
                 placeholder="Element listy"

@@ -1,5 +1,5 @@
 import React from "react";
-import { Navigation, Home, Footer, Notes } from "./components";
+import { Navigation, Home, Footer, Notes, About } from "./components";
 import { AppContainer } from "./UI/theme";
 import { Provider } from "react-redux";
 import { store } from "./redux/storeConfig";
@@ -13,6 +13,7 @@ function App() {
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/notes" component={Notes} />
+            <Route path="/about" component={About} />
           </Switch>
           <Footer />
         </AppContainer>

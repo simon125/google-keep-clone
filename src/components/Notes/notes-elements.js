@@ -31,7 +31,7 @@ export const Icon = styled.span`
   color: #999;
   cursor: pointer;
 `;
-export const Tool = styled.button`
+export const IconButton = styled.button`
   color: #666;
   border: none;
   margin-right: 15px;
@@ -106,11 +106,11 @@ export const ListItem = styled.li`
   &:hover ${Icon} {
     opacity: 1;
   }
-  ${Tool} {
+  ${IconButton} {
     transition: opacity 0.1s;
     opacity: 0;
   }
-  &:hover ${Tool} {
+  &:hover ${IconButton} {
     opacity: 1;
   }
 `;

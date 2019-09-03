@@ -1,97 +1,42 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   TagWidgetContainer,
   TagFormContainer,
   Icon,
-  Tool,
+  IconButton, //change path
   WidgetTitle,
   TagInput,
-  AddTagBtn,
-  TagList,
-  Tag,
-  Checkbox,
-  Label
+  AddTagBtn
 } from "./widget-elements";
 import "./scrollbar.css";
 import { connect } from "react-redux";
 import { addTag } from "../../redux/notes";
-import { store } from "../../redux/storeConfig";
+import AvaiableTags from "./AvaiableTags";
 
-function TagWidget({
-  chosenTagsForNote,
-  setNewTagsForNote,
-  fetchedTags = [],
-  addTag
-}) {
-  const [showWidget, toggleWidget] = useState(false);
+function TagWidget({ chosenTags, setTags, tags = [], addTag }) {
+  const [isWidgetOpen, setIsWidgetOpen] = useState(false);
   const [newTagName, setNewTagName] = useState("");
-  const [tagsToDisplay, setNewTagsToDisplay] = useState([...fetchedTags]);
-  const [noteTags, setNoteTags] = useState([...chosenTagsForNote]);
-
-  const handleChange = e => setNewTagName(e.target.value);
 
   const handleSubmit = e => {
     e.preventDefault();
     const tag = newTagName.trim();
-    if (
-      tag !== "" &&
-      fetchedTags.every(tag => newTagName.trim() !== tag.name)
-    ) {
-      addTag({ name: tag });
-      setNoteTags([...noteTags, tag]);
+    if (tag !== "" && tags.every(tag => newTagName.trim() !== tag.name)) {
+      addTag({ name: tag }); //Redux action creator
+      setTags([...chosenTags, tag]); //Hook for note form // TODO: check if there is no better practise for that
       setNewTagName("");
     }
   };
 
-  useEffect(() => {
-    const subscribe = store.subscribe(() => {
-      setNewTagsToDisplay(store.getState().notes.tags);
-    });
-    if (newTagName.trim() !== "") {
-      const filteredTags = fetchedTags.filter(tag =>
-        tag.name.includes(newTagName)
-      );
-      setNewTagsToDisplay(filteredTags);
-    } else {
-      setNewTagsToDisplay(fetchedTags);
-    }
-    setNewTagsForNote(noteTags);
-
-    return () => subscribe();
-  }, [newTagName, noteTags]);
-
-  // useEffect(() => {
-  //   const subscribe = store.subscribe(() => {
-  //     const actualTagsNote = store.getState().notes.tags;
-  //     if (newTagName.trim() !== "") {
-  //       const filteredTags = actualTagsNote.filter(tag =>
-  //         tag.name.includes(newTagName)
-  //       );
-  //       setNewTagsToDisplay(filteredTags);
-  //     } else {
-  //       setNewTagsToDisplay(actualTagsNote);
-  //     }
-  //   });
-  //   setNewTagsForNote(noteTags);
-  //   return () => subscribe();
-  // }, [newTagName, noteTags]);
-
-  const handleCheckboxChange = e => {
-    const isChecked = e.target.checked;
-    const tag = e.target.value;
-    if (isChecked && !noteTags.includes(tag)) {
-      setNoteTags([...noteTags, tag]);
-    } else {
-      setNoteTags(noteTags.filter(noteTag => noteTag !== tag));
-    }
+  const checkDuplicates = () => {
+    return tags.every(tag => newTagName.trim() !== tag.name);
   };
 
   return (
     <TagWidgetContainer>
-      <Tool onClick={() => toggleWidget(!showWidget)}>
+      <IconButton onClick={() => setIsWidgetOpen(!isWidgetOpen)}>
         <Icon className="fas fa-tags" />
-      </Tool>
-      {showWidget && (
+      </IconButton>
+      {isWidgetOpen && (
         <TagFormContainer>
           <WidgetTitle>Etykieta notatki</WidgetTitle>
           <form
@@ -100,7 +45,7 @@ function TagWidget({
           >
             <TagInput
               value={newTagName}
-              onChange={handleChange}
+              onChange={e => setNewTagName(e.target.value)}
               maxLength="15"
               placeholder="Wpisz nazwę etykiety"
               type="text"
@@ -110,28 +55,13 @@ function TagWidget({
               className="fas fa-search"
             />
           </form>
-          <TagList>
-            {tagsToDisplay.map(tag => (
-              <Tag key={tag.id}>
-                <Checkbox
-                  onChange={handleCheckboxChange}
-                  value={tag.name}
-                  checked={chosenTagsForNote.includes(tag.name)}
-                  type="checkbox"
-                />
-                <Label>{tag.name}</Label>
-              </Tag>
-            ))}
-          </TagList>
 
-          {newTagName !== "" &&
-          fetchedTags.every(tag => newTagName.trim() !== tag.name) ? (
+          <AvaiableTags tags={tags} chosenTags={chosenTags} setTags={setTags} />
+          {newTagName && checkDuplicates() && (
             <AddTagBtn onClick={handleSubmit}>
               <span className="fas fa-plus fa-xs" style={{ margin: "0 4px" }} />{" "}
               Utwórz etykietę "{newTagName}"
             </AddTagBtn>
-          ) : (
-            ""
           )}
         </TagFormContainer>
       )}
@@ -139,11 +69,17 @@ function TagWidget({
   );
 }
 
+const mapStateToProps = state => {
+  return {
+    tags: state.notes.tags
+  };
+};
+
 const mapDispatchToProps = {
   addTag
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(TagWidget);
