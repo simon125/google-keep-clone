@@ -1,7 +1,7 @@
-import React from "react";
-import styled from "styled-components";
-import Task from "./Note";
-import { Droppable } from "react-beautiful-dnd";
+import React from 'react';
+import styled from 'styled-components';
+import Task from './Note';
+import { Droppable } from 'react-beautiful-dnd';
 
 const TaskList = styled.div`
   padding: 8px;
@@ -15,7 +15,7 @@ const TaskList = styled.div`
 function Column({ column, tasks }) {
   return (
     <Droppable droppableId={column.id}>
-      {provided => (
+      {(provided) => (
         <TaskList ref={provided.innerRef} {...provided.droppableProps}>
           {tasks.map((task, index) => (
             <Task key={task.id} className={task.id} task={task} index={index} />

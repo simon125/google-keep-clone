@@ -1,7 +1,11 @@
-import React from "react";
-import TagWidget from "../TagWidget/TagWidget";
-import ColorPicker from "../ColorPicker/ColorPicker";
-import { FormToolsGroup, CloseBtn, IconButton } from "../Notes/notes-elements";
+import React from 'react';
+import TagWidget from '../TagWidget/TagWidget';
+import ColorPicker from '../ColorPicker/ColorPicker';
+import {
+  FormToolsGroup,
+  CloseBtn,
+  IconButton
+} from '../NoteForm/notes-elements';
 
 function NotesFormFooter({
   chosenTags,
@@ -15,7 +19,7 @@ function NotesFormFooter({
   return (
     <FormToolsGroup>
       <IconButton
-        className={noteEditorMode ? "far fa-clipboard" : "fas fa-list-ul"}
+        className={noteEditorMode ? 'far fa-clipboard' : 'fas fa-list-ul'}
         onClick={handleToggleClick}
       />
       <TagWidget chosenTags={chosenTags} setTags={setTags} />

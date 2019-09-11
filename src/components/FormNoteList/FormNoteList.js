@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   IconButton,
   Icon,
@@ -7,14 +7,14 @@ import {
   ListItemForm,
   Checkbox,
   ListItemFormInput
-} from "../Notes/notes-elements";
-import uuid from "uuid";
+} from '../NoteForm/notes-elements';
+import uuid from 'uuid';
 
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 function FormNoteList({ checkList, setCheckList, deleteListItem }) {
-  const [listItem, setListItem] = useState("");
-  const handleSubmit = e => {
+  const [listItem, setListItem] = useState('');
+  const handleSubmit = (e) => {
     const uid = uuid();
     const newCheckList = {
       ...checkList,
@@ -24,7 +24,7 @@ function FormNoteList({ checkList, setCheckList, deleteListItem }) {
       }
     };
     setCheckList(newCheckList);
-    setListItem("");
+    setListItem('');
   };
   const handleChange = (e, item) => {
     setCheckList({
@@ -35,14 +35,14 @@ function FormNoteList({ checkList, setCheckList, deleteListItem }) {
       }
     });
   };
-  const handleKeyUp = e => {
-    if (e.key === "Enter") {
-      document.getElementById("listItemFormInput").focus();
+  const handleKeyUp = (e) => {
+    if (e.key === 'Enter') {
+      document.getElementById('listItemFormInput').focus();
     }
   };
   return (
     <DragDropContext
-      onDragEnd={result => {
+      onDragEnd={(result) => {
         if (
           !result.destination ||
           result.destination.index === result.source.index
@@ -98,7 +98,7 @@ function FormNoteList({ checkList, setCheckList, deleteListItem }) {
                       <ListItemFormInput
                         autoFocus={i === arr.length - 1}
                         value={checkList[item.uid].listItem}
-                        onChange={e => handleChange(e, item)}
+                        onChange={(e) => handleChange(e, item)}
                         onKeyUp={handleKeyUp}
                       />
                     </span>

@@ -1,35 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   FormContainer,
   FormGroup,
   TitleField,
   NoteField,
   IconButton
-} from "./notes-elements";
-import FormNoteList from "../FormNoteList/FormNoteList";
-import TagList from "../TagList/TagList";
-import NotesFormMenu from "../NotesFormFooter/NotesFormFooter";
-import TextareaAutosize from "react-autosize-textarea";
-import { connect } from "react-redux";
-import { addNote } from "../../redux/notes";
+} from './notes-elements';
+import FormNoteList from '../FormNoteList/FormNoteList';
+import TagList from '../TagList/TagList';
+import NotesFormMenu from '../NotesFormFooter/NotesFormFooter';
+import TextareaAutosize from 'react-autosize-textarea';
+import { connect } from 'react-redux';
+import { addNote } from '../../redux/notes';
 import {
   getListBasedOnLineTextBreak,
   getSingleNoteBasedOnList,
   checkIfTargetIsForm
-} from "../../utils";
+} from '../../utils';
 
-function NotesForm({ addNote }) {
-  const [title, setTitle] = useState("");
-  const [note, setNote] = useState("");
+function NoteForm({ addNote }) {
+  const [title, setTitle] = useState('');
+  const [note, setNote] = useState('');
   const [checkList, setCheckList] = useState({});
   const [isPinned, setIsPinned] = useState(false);
   const [tags, setTags] = useState([]);
-  const [bgColor, setBgColor] = useState("transparent");
+  const [bgColor, setBgColor] = useState('transparent');
   const [isInputOpen, setInputOpen] = useState(false);
   const [noteEditorMode, setNoteEditorMode] = useState(false);
 
   const toggleNoteEditorMode = () => {
-    let newNote = "";
+    let newNote = '';
     let newNoteCheckList = {};
 
     if (noteEditorMode) {
@@ -43,21 +43,21 @@ function NotesForm({ addNote }) {
   };
 
   const resetForm = () => {
-    setTitle("");
-    setNote("");
+    setTitle('');
+    setNote('');
     setTags([]);
     setCheckList({});
     setIsPinned(false);
-    setBgColor("transparent");
+    setBgColor('transparent');
     setNoteEditorMode(false);
     setInputOpen(false);
   };
 
   const validateFields = () => {
-    return (note + title).trim() !== "" || Object.values(checkList).length > 0;
+    return (note + title).trim() !== '' || Object.values(checkList).length > 0;
   };
 
-  const handleBodyClick = e => {
+  const handleBodyClick = (e) => {
     const targetIsForm = checkIfTargetIsForm(e.target);
     if (targetIsForm) {
       return;
@@ -78,19 +78,18 @@ function NotesForm({ addNote }) {
     resetForm();
   };
 
-  const deleteListItem = e => {
+  const deleteListItem = (e) => {
     const newCheckListItems = { ...checkList };
     delete newCheckListItems[e.target.name];
     setCheckList(newCheckListItems);
   };
 
   useEffect(() => {
-    document.body.addEventListener("mousedown", handleBodyClick);
-    console.log(tags);
+    document.body.addEventListener('mousedown', handleBodyClick);
     return () => {
-      document.body.removeEventListener("mousedown", handleBodyClick);
+      document.body.removeEventListener('mousedown', handleBodyClick);
     };
-  }, [tags]);
+  }, [handleBodyClick, tags]);
 
   return (
     <FormContainer bgColor={bgColor} className="note-form">
@@ -99,11 +98,11 @@ function NotesForm({ addNote }) {
           <TitleField
             name="title"
             value={title}
-            onChange={e => setTitle(e.target.value)}
+            onChange={(e) => setTitle(e.target.value)}
             placeholder="Tytuł"
           />
           <IconButton
-            className={isPinned ? "icon-pin" : "icon-pin-outline"}
+            className={isPinned ? 'icon-pin' : 'icon-pin-outline'}
             onClick={() => setIsPinned(!isPinned)}
           />
         </FormGroup>
@@ -117,10 +116,10 @@ function NotesForm({ addNote }) {
           />
         ) : (
           <TextareaAutosize
-            style={{ ...NoteField, resize: "none" }}
+            style={{ ...NoteField, resize: 'none' }}
             name="note"
             value={note}
-            onChange={e => setNote(e.target.value)}
+            onChange={(e) => setNote(e.target.value)}
             onClick={() => setInputOpen(true)}
             placeholder="Utwórz notatkę..."
           />
@@ -159,4 +158,4 @@ const mapDispatchToProps = {
 export default connect(
   null,
   mapDispatchToProps
-)(NotesForm);
+)(NoteForm);

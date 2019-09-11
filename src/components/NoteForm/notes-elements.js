@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const NotesContainer = styled.section`
   height: 75vh;
@@ -8,8 +8,8 @@ export const FormContainer = styled.div`
   width: 60%;
   min-height: 60px;
   transition: background 0.2s;
-  background: ${props =>
-    props.bgColor === "transparent" ? "#fefefe" : props.bgColor};
+  background: ${(props) =>
+    props.bgColor === 'transparent' ? '#fefefe' : props.bgColor};
   border-radius: 5px;
   box-shadow: 1px 1px 8px 1px rgba(89, 89, 89, 0.53);
   padding: 20px 0px 6px 0px;
@@ -64,15 +64,15 @@ export const TitleField = styled.input`
 //   height: auto;
 // `;
 export const NoteField = {
-  background: "transparent",
-  border: "none",
-  color: "#666",
-  outline: "none",
-  letterSpacing: "0.7px",
-  fontSize: "15px",
-  width: "100%",
-  margin: " 0 20px 0 20px",
-  height: "auto"
+  background: 'transparent',
+  border: 'none',
+  color: '#666',
+  outline: 'none',
+  letterSpacing: '0.7px',
+  fontSize: '15px',
+  width: '100%',
+  margin: ' 0 20px 0 20px',
+  height: 'auto'
 };
 export const CloseBtn = styled.button`
   background: transparent;
@@ -121,7 +121,7 @@ export const ListItemForm = styled.li`
   width: 100%;
   display: flex;
   background: transparent;
-  margin-top: ${props => (props.marginPlaceholder ? "38px" : 0)};
+  margin-top: ${(props) => (props.marginPlaceholder ? '38px' : 0)};
 `;
 export const Checkbox = styled.input`
   margin-right: 10px;
