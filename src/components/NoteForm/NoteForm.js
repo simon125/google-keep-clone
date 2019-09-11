@@ -5,10 +5,10 @@ import {
   TitleField,
   NoteField,
   IconButton
-} from './notes-elements';
+} from './NoteFormElements';
 import FormNoteList from '../FormNoteList/FormNoteList';
 import TagList from '../TagList/TagList';
-import NotesFormMenu from '../NotesFormFooter/NotesFormFooter';
+import NotesFormMenu from './NotesFormFooter';
 import TextareaAutosize from 'react-autosize-textarea';
 import { connect } from 'react-redux';
 import { addNote } from '../../redux/notes';

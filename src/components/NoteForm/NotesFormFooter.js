@@ -1,11 +1,7 @@
 import React from 'react';
 import TagWidget from '../TagWidget/TagWidget';
 import ColorPicker from '../ColorPicker/ColorPicker';
-import {
-  FormToolsGroup,
-  CloseBtn,
-  IconButton
-} from '../NoteForm/notes-elements';
+import { FormToolsGroup, CloseBtn, IconButton } from './NoteFormElements';
 
 function NotesFormFooter({
   chosenTags,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { NotesContainer } from '../../components/NoteForm/notes-elements';
+import { NotesContainer } from '../../components/NoteForm/NoteFormElements';
 import NoteForm from '../../components/NoteForm/NoteForm';
 // import NotesList from './NotesList';
 

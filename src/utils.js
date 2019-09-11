@@ -1,28 +1,28 @@
-import uuid from "uuid";
+import uuid from 'uuid';
 
-export const getListBasedOnLineTextBreak = text => {
+export const getListBasedOnLineTextBreak = (text) => {
   return text.split(/\r?\n/).reduce((newCheckList, nameOfListItem) => {
     const uid = uuid();
-    return nameOfListItem.trim() === ""
+    return nameOfListItem.trim() === ''
       ? { ...newCheckList }
       : {
           ...newCheckList,
           [uid]: {
-            listItemName: nameOfListItem,
+            listItem: nameOfListItem,
             uid
           }
         };
   }, {});
 };
-export const getSingleNoteBasedOnList = list => {
+export const getSingleNoteBasedOnList = (list) => {
   return Object.values(list)
-    .map(listItem => listItem.listItemName)
-    .join("\r\n");
+    .map((listItem) => listItem.listItem)
+    .join('\r\n');
 };
-export const checkIfTargetIsForm = target => {
+export const checkIfTargetIsForm = (target) => {
   if (!target) return false;
   const className = target.className;
-  if (className && className.includes("note-form")) {
+  if (className && className.includes('note-form')) {
     return true;
   }
   return checkIfTargetIsForm(target.parentElement);
