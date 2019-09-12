@@ -41,6 +41,7 @@ function FormNoteList({ checkList, setCheckList, deleteListItem }) {
       document.getElementById("listItemFormInput").focus();
     }
   };
+  //TODO: refactor result function
   const onDragEnd = result => {
     const sourceIndex = result.source.index;
     const destinationIndex = result.destination.index;

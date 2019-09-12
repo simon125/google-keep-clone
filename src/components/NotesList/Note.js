@@ -13,10 +13,9 @@ const Container = styled.div`
       : "0px 0px 0px 0px rgba(0,0,0,0)"};
 `;
 
-function Task({ task, index }) {
-  console.log(task, index);
+function Task({ note, index }) {
   return (
-    <Draggable draggableId={task.id} index={index}>
+    <Draggable draggableId={note.id} index={index}>
       {(provided, snapshot) => (
         <Container
           isDragging={snapshot.draggingOver}
@@ -24,7 +23,7 @@ function Task({ task, index }) {
           {...provided.dragHandleProps}
           ref={provided.innerRef}
         >
-          {task.note}
+          {note.note}
         </Container>
       )}
     </Draggable>

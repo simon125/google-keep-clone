@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { DragDropContext } from "react-beautiful-dnd";
 import Column from "./Column";
-
 import { store } from "../../redux/storeConfig";
 
 export const NoteListContainer = styled.div`
@@ -16,29 +15,26 @@ export const NoteListContainer = styled.div`
 
 function NoteList({ notes }) {
   const initialData = {
-    tasks: {
-      "task-1": { id: "task-1", content: "Take out the garbage" }
-    },
     columns: {
       "column-1": {
         id: "column-1",
-        tasksIds: []
+        notesIds: []
       },
       "column-2": {
         id: "column-2",
-        tasksIds: []
+        notesIds: []
       },
       "column-3": {
         id: "column-3",
-        tasksIds: []
+        notesIds: []
       },
       "column-4": {
         id: "column-4",
-        tasksIds: []
+        notesIds: []
       },
       "column-5": {
         id: "column-5",
-        tasksIds: []
+        notesIds: []
       }
     },
     columnOrder: ["column-1", "column-2", "column-3", "column-4", "column-5"]
@@ -123,12 +119,11 @@ function NoteList({ notes }) {
 
   return (
     <NoteListContainer>
-      <DragDropContext onDragStart={prop1 => {}} onDragEnd={onDragEnd}>
+      <DragDropContext onDragEnd={onDragEnd}>
         {dndState.columnOrder.map(columnId => {
           const column = dndState.columns[columnId];
-          const tasks = column.tasksIds.map(taskId => dndState.tasks[taskId]);
-          debugger;
-          return <Column key={column.id} column={column} tasks={tasks} />;
+          const notes = column.tasksIds.map(taskId => dndState.tasks[taskId]);
+          return <Column key={column.id} column={column} notes={notes} />;
         })}
       </DragDropContext>
     </NoteListContainer>
