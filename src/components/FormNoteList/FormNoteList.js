@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   IconButton,
   Icon,
@@ -7,15 +7,15 @@ import {
   ListItemForm,
   Checkbox,
   ListItemFormInput
-} from '../NoteForm/NoteFormElements';
-import uuid from 'uuid';
+} from "../NoteForm/NoteFormElements";
+import uuid from "uuid";
 
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 function FormNoteList({ checkList, setCheckList, deleteListItem }) {
   console.log(checkList);
-  const [listItem, setListItem] = useState('');
-  const handleSubmit = (e) => {
+  const [listItem, setListItem] = useState("");
+  const handleSubmit = e => {
     const uid = uuid();
     const newCheckList = {
       ...checkList,
@@ -25,7 +25,7 @@ function FormNoteList({ checkList, setCheckList, deleteListItem }) {
       }
     };
     setCheckList(newCheckList);
-    setListItem('');
+    setListItem("");
   };
   const handleChange = (e, item) => {
     setCheckList({
@@ -36,63 +36,48 @@ function FormNoteList({ checkList, setCheckList, deleteListItem }) {
       }
     });
   };
-  const handleKeyUp = (e) => {
-    if (e.key === 'Enter') {
-      document.getElementById('listItemFormInput').focus();
+  const handleKeyUp = e => {
+    if (e.key === "Enter") {
+      document.getElementById("listItemFormInput").focus();
     }
   };
-  return (
-    <DragDropContext
-      onDragEnd={(result) => {
-        const draggableId = result.draggableId;
-        const sourceIndex = result.source.index;
-        const destinationIndex = result.destination.index;
+  const onDragEnd = result => {
+    const sourceIndex = result.source.index;
+    const destinationIndex = result.destination.index;
 
-        if (!destinationIndex || destinationIndex === sourceIndex) {
-          return;
+    if (!destinationIndex || destinationIndex === sourceIndex) {
+      return;
+    }
+    let movedItemId;
+    let newCheckList = Object.values(checkList)
+      .filter((listItem, index) => {
+        if (index !== sourceIndex) return true;
+        movedItemId = listItem.uid;
+        return false;
+      })
+      .reduce((newCheckList, listItem, index) => {
+        if (index === destinationIndex) {
+          newCheckList[movedItemId] = {
+            uid: movedItemId,
+            listItem: checkList[movedItemId].listItem
+          };
         }
-        let movedItemId;
-
-        const newCheckList = Object.values(checkList)
-          .filter((listItem, index) => {
-            if (index !== sourceIndex) return true;
-            movedItemId = listItem.uid;
-            return false;
-          })
-          .reduce((newCheckList, listItem, index) => {
-            if (index === destinationIndex) {
-              newCheckList[movedItemId] = {
-                uid: movedItemId,
-                listItem: checkList[movedItemId]
-              };
-              newCheckList[listItem] = {
-                uid: listItem.uid,
-                listItem
-              };
-              return newCheckList;
-            }
-          }, {});
-
-        // for (let prop in checkList) {
-        //   if (prop === draggableId) continue;
-        //   if (index === destinationIndex) {
-        //     newCheckList = {
-        //       ...newCheckList,
-        //       [draggableId]: {
-        //         ...checkList[draggableId]
-        //       }
-        //     };
-        //   }
-        //   newCheckList = {
-        //     ...newCheckList,
-        //     [prop]: {
-        //       ...checkList[prop]
-        //     }
-        //   };
-        // }
-        setCheckList(newCheckList);
-      }}
-    >
+        newCheckList[listItem.uid] = {
+          uid: listItem.uid,
+          listItem: listItem.listItem
+        };
+        return newCheckList;
+      }, {});
+    if (Object.values(newCheckList).length !== destinationIndex + 1) {
+      newCheckList[movedItemId] = {
+        uid: movedItemId,
+        listItem: checkList[movedItemId].listItem
+      };
+    }
+    setCheckList(newCheckList);
+  };
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId="droppable">
         {(provided, snapshot) => (
           <ListContainer {...provided.droppableProps} ref={provided.innerRef}>
@@ -102,7 +87,6 @@ function FormNoteList({ checkList, setCheckList, deleteListItem }) {
                   <ListItem
                     {...provided.draggableProps}
                     ref={provided.innerRef}
-                    // key={item.uid}
                   >
                     <span>
                       <Icon
@@ -113,7 +97,7 @@ function FormNoteList({ checkList, setCheckList, deleteListItem }) {
                       <ListItemFormInput
                         autoFocus={i === arr.length - 1}
                         value={checkList[item.uid].listItem}
-                        onChange={(e) => handleChange(e, item)}
+                        onChange={e => handleChange(e, item)}
                         onKeyUp={handleKeyUp}
                       />
                     </span>
