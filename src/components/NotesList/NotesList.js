@@ -12,8 +12,19 @@ export const NoteListContainer = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
 `;
-
+// TO CHECK https://codesandbox.io/s/9z7qwmmr7r
 function NoteList({ notes }) {
+  //set initialStateOfColumns according to screen width
+  const [columns, setColumns] = useState({});
+  const [columnOrder, setColumnOrder] = useState([
+    "column-1",
+    "column-2",
+    "column-3",
+    "column-4",
+    "column-5",
+    "column-6"
+  ]);
+
   const initialData = {
     columns: {
       "column-1": {
@@ -35,9 +46,12 @@ function NoteList({ notes }) {
       "column-5": {
         id: "column-5",
         notesIds: []
+      },
+      "column-6": {
+        id: "column-6",
+        notesIds: []
       }
-    },
-    columnOrder: ["column-1", "column-2", "column-3", "column-4", "column-5"]
+    }
   };
 
   const [dndState, setDndState] = useState(initialData);
@@ -46,12 +60,12 @@ function NoteList({ notes }) {
     const subscription = store.subscribe(() => {
       setDndState({
         ...dndState,
-        tasks: store.getState().notes.notes,
+        notes: store.getState().notes.notes,
         columns: {
           ...dndState.columns,
           "column-1": {
             id: "column-1",
-            tasksIds: Object.keys(store.getState().notes.notes)
+            notesIds: Object.keys(store.getState().notes.notes)
           }
         }
       });
@@ -74,13 +88,13 @@ function NoteList({ notes }) {
     const start = dndState.columns[source.droppableId];
     const finish = dndState.columns[destination.droppableId];
     if (start === finish) {
-      const newTaskIds = Array.from(start.tasksIds);
-      newTaskIds.splice(source.index, 1);
-      newTaskIds.splice(destination.index, 0, draggableId);
+      const newNotesIds = Array.from(start.notesIds);
+      newNotesIds.splice(source.index, 1);
+      newNotesIds.splice(destination.index, 0, draggableId);
 
       const newColumn = {
         ...start,
-        tasksIds: newTaskIds
+        tasksIds: newNotesIds
       };
 
       const newState = {
@@ -94,21 +108,21 @@ function NoteList({ notes }) {
       setDndState(newState);
       return;
     }
-    const startTaskIds = Array.from(start.tasksIds);
-    startTaskIds.splice(source.index, 1);
+    const startNotesIds = Array.from(start.notesIds);
+    startNotesIds.splice(source.index, 1);
     const newStart = {
       ...start,
-      tasksIds: startTaskIds
+      notesIds: startNotesIds
     };
-    const finishTaskIds = Array.from(finish.tasksIds);
-    finishTaskIds.splice(destination.index, 0, draggableId);
+    const finishNotesIds = Array.from(finish.notesIds);
+    finishNotesIds.splice(destination.index, 0, draggableId);
     const newFinish = {
       ...finish,
-      tasksIds: finishTaskIds
+      notesIds: finishNotesIds
     };
     const newState = {
       ...dndState,
-      columns: {
+      notes: {
         ...dndState.columns,
         [newStart.id]: newStart,
         [newFinish.id]: newFinish
@@ -120,9 +134,9 @@ function NoteList({ notes }) {
   return (
     <NoteListContainer>
       <DragDropContext onDragEnd={onDragEnd}>
-        {dndState.columnOrder.map(columnId => {
+        {columnOrder.map(columnId => {
           const column = dndState.columns[columnId];
-          const notes = column.tasksIds.map(taskId => dndState.tasks[taskId]);
+          const notes = column.notesIds.map(noteId => dndState.notes[noteId]);
           return <Column key={column.id} column={column} notes={notes} />;
         })}
       </DragDropContext>

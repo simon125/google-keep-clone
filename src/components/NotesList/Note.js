@@ -14,6 +14,9 @@ const Container = styled.div`
 `;
 
 function Task({ note, index }) {
+  const noteToDisplay = note.note.trim();
+  const noteList = Object.values(note.checkList);
+
   return (
     <Draggable draggableId={note.id} index={index}>
       {(provided, snapshot) => (
@@ -23,7 +26,15 @@ function Task({ note, index }) {
           {...provided.dragHandleProps}
           ref={provided.innerRef}
         >
-          {note.note}
+          {noteToDisplay ? (
+            noteToDisplay
+          ) : (
+            <ul>
+              {noteList.map(note => (
+                <li key={note.uid}>{note.listItem}</li>
+              ))}
+            </ul>
+          )}
         </Container>
       )}
     </Draggable>
