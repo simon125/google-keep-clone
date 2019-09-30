@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import styled from "styled-components";
-import { DragDropContext } from "react-beautiful-dnd";
-import Column from "./Column";
-import { store } from "../../redux/storeConfig";
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import styled from 'styled-components';
+import { DragDropContext } from 'react-beautiful-dnd';
+import Column from './Column';
 
 export const NoteListContainer = styled.div`
   margin: 10px;
@@ -15,67 +14,87 @@ export const NoteListContainer = styled.div`
 // TO CHECK https://codesandbox.io/s/9z7qwmmr7r
 function NoteList({ notes }) {
   //set initialStateOfColumns according to screen width
-  const [columns, setColumns] = useState({});
-  const [columnOrder, setColumnOrder] = useState([
-    "column-1",
-    "column-2",
-    "column-3",
-    "column-4",
-    "column-5",
-    "column-6"
-  ]);
-
-  const initialData = {
-    columns: {
-      "column-1": {
-        id: "column-1",
-        notesIds: []
-      },
-      "column-2": {
-        id: "column-2",
-        notesIds: []
-      },
-      "column-3": {
-        id: "column-3",
-        notesIds: []
-      },
-      "column-4": {
-        id: "column-4",
-        notesIds: []
-      },
-      "column-5": {
-        id: "column-5",
-        notesIds: []
-      },
-      "column-6": {
-        id: "column-6",
-        notesIds: []
-      }
+  // debugger;
+  const [columns, setColumns] = useState({
+    'column-1': {
+      id: 'column-1',
+      notesIds: []
+    },
+    'column-2': {
+      id: 'column-2',
+      notesIds: []
+    },
+    'column-3': {
+      id: 'column-3',
+      notesIds: []
+    },
+    'column-4': {
+      id: 'column-4',
+      notesIds: []
+    },
+    'column-5': {
+      id: 'column-5',
+      notesIds: []
+    },
+    'column-6': {
+      id: 'column-6',
+      notesIds: []
     }
-  };
-
-  const [dndState, setDndState] = useState(initialData);
-
+  });
+  const [columnOrder, setColumnOrder] = useState([
+    'column-1',
+    'column-2',
+    'column-3',
+    'column-4',
+    'column-5',
+    'column-6'
+  ]);
   useEffect(() => {
-    const subscription = store.subscribe(() => {
-      setDndState({
-        ...dndState,
-        notes: store.getState().notes.notes,
-        columns: {
-          ...dndState.columns,
-          "column-1": {
-            id: "column-1",
-            notesIds: Object.keys(store.getState().notes.notes)
-          }
-        }
-      });
-    });
-    return () => {
-      subscription();
-    };
-  }, []);
+    // debugger;
 
-  const onDragEnd = result => {
+    if (Object.values(notes).length) {
+      const columnsToSet = Object.values(notes).reduce(
+        (newColumns, note, index) => {
+          let columns1;
+          // debugger;
+          if (newColumns.hasOwnProperty(`column-${note.column}`)) {
+            columns1 = {
+              ...newColumns,
+              ['column-' + note.column]: {
+                notesIds: [
+                  ...newColumns[`column-${note.column}`].notesIds,
+                  note.id
+                ]
+              }
+            };
+          } else {
+            columns1 = {
+              ...newColumns,
+              ['column-' + note.column]: {
+                notesIds: [note.id]
+              }
+            };
+          }
+          // debugger;
+          return columns1;
+        },
+        {}
+      );
+      debugger;
+      //fill gaps
+      const keys = Object.keys(columnsToSet);
+      const gaps = columnOrder.filter((key) => !keys.includes(key));
+      gaps.forEach((key) => {
+        columnsToSet[key] = {
+          notesIds: [],
+          id: key
+        };
+      });
+      setColumns(columnsToSet);
+    }
+  }, [notes]);
+
+  const onDragEnd = (result) => {
     const { destination, source, draggableId } = result;
 
     if (
@@ -85,8 +104,8 @@ function NoteList({ notes }) {
     ) {
       return;
     }
-    const start = dndState.columns[source.droppableId];
-    const finish = dndState.columns[destination.droppableId];
+    const start = columns[source.droppableId];
+    const finish = columns[destination.droppableId];
     if (start === finish) {
       const newNotesIds = Array.from(start.notesIds);
       newNotesIds.splice(source.index, 1);
@@ -97,15 +116,11 @@ function NoteList({ notes }) {
         tasksIds: newNotesIds
       };
 
-      const newState = {
-        ...dndState,
-        columns: {
-          ...dndState.columns,
-          [newColumn.id]: newColumn
-        }
+      const newColumns = {
+        ...columns,
+        [newColumn.id]: newColumn
       };
-
-      setDndState(newState);
+      setColumns(newColumns);
       return;
     }
     const startNotesIds = Array.from(start.notesIds);
@@ -121,30 +136,31 @@ function NoteList({ notes }) {
       notesIds: finishNotesIds
     };
     const newState = {
-      ...dndState,
       notes: {
-        ...dndState.columns,
+        ...columns,
         [newStart.id]: newStart,
         [newFinish.id]: newFinish
       }
     };
-    setDndState(newState);
+    setColumns(newState);
   };
 
   return (
     <NoteListContainer>
       <DragDropContext onDragEnd={onDragEnd}>
-        {columnOrder.map(columnId => {
-          const column = dndState.columns[columnId];
-          const notes = column.notesIds.map(noteId => dndState.notes[noteId]);
-          return <Column key={column.id} column={column} notes={notes} />;
+        {columnOrder.map((columnId) => {
+          const column = columns[columnId];
+          const notesToDisplay = column.notesIds.map((noteId) => notes[noteId]);
+          return (
+            <Column key={column.id} column={column} notes={notesToDisplay} />
+          );
         })}
       </DragDropContext>
     </NoteListContainer>
   );
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     notes: state.notes.notes
   };

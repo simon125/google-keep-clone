@@ -1,13 +1,13 @@
-import React from "react";
-import { NotesContainer } from "../../components/NoteForm/NoteFormElements";
-import NoteForm from "../../components/NoteForm/NoteForm";
-import NotesList from "../../components/NotesList/NotesList";
+import React from 'react';
+import { NotesContainer } from '../../components/NoteForm/NoteFormElements';
+import NoteForm from '../../components/NoteForm/NoteForm';
+import NotesListClass from '../../components/NotesListClass/NotesListClass';
 
 function Notes() {
   return (
     <NotesContainer>
       <NoteForm />
-      <NotesList />
+      <NotesListClass />
     </NotesContainer>
   );
 }

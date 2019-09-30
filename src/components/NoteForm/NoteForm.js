@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import uuid from 'uuid';
 import {
   FormContainer,
   FormGroup,
@@ -12,13 +13,14 @@ import NotesFormMenu from './NotesFormFooter';
 import TextareaAutosize from 'react-autosize-textarea';
 import { connect } from 'react-redux';
 import { addNote } from '../../redux/notes';
+import { pushUidToStructure } from '../../firebase/firebaseAPI';
 import {
   getListBasedOnLineTextBreak,
   getSingleNoteBasedOnList,
   checkIfTargetIsForm
 } from '../../utils';
 
-function NoteForm({ addNote }) {
+function NoteForm({ addNote, lastIndex }) {
   const [title, setTitle] = useState('');
   const [note, setNote] = useState('');
   const [checkList, setCheckList] = useState({});
@@ -62,6 +64,7 @@ function NoteForm({ addNote }) {
     if (targetIsForm) {
       return;
     } else if (!targetIsForm && validateFields()) {
+      const newUuid = uuid();
       const newNote = {
         title,
         note,
@@ -70,7 +73,8 @@ function NoteForm({ addNote }) {
         tags,
         bgColor,
         column: 1,
-        row: 1
+        row: lastIndex,
+        uuid: newUuid
       };
       addNote(newNote);
     }
@@ -150,12 +154,17 @@ function NoteForm({ addNote }) {
     </FormContainer>
   );
 }
+const mapStateToProps = (state) => {
+  return {
+    lastIndex: state.notes.lastIndex
+  };
+};
 
 const mapDispatchToProps = {
   addNote
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(NoteForm);
