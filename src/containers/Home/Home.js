@@ -1,6 +1,6 @@
-import React from "react";
-import AuthForm from "../AuthForm/AuthForm";
-import styled from "styled-components";
+import React from 'react';
+import AuthForm from '../../components/AuthForm/AuthForm';
+import styled from 'styled-components';
 
 const HomeContainer = styled.div`
   display: flex;

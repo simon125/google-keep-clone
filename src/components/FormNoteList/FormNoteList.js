@@ -1,44 +1,38 @@
 import React, { useState } from "react";
 import {
-  Tool,
+  IconButton,
   Icon,
   ListContainer,
   ListItem,
   ListItemForm,
   Checkbox,
   ListItemFormInput
-} from "../Notes/notes-elements";
+} from "../NoteForm/NoteFormElements";
 import uuid from "uuid";
 
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
-function FormNoteList({ noteState, setNoteState, handleDeleteListItem }) {
-  const [listItemName, setListItemName] = useState("");
-
+function FormNoteList({ checkList, setCheckList, deleteListItem }) {
+  console.log(checkList);
+  const [listItem, setListItem] = useState("");
   const handleSubmit = e => {
     const uid = uuid();
-    const newNoteState = {
-      ...noteState,
-      checkListItems: {
-        ...noteState.checkListItems,
-        [uid]: {
-          listItemName: e.target.value,
-          uid
-        }
+    const newCheckList = {
+      ...checkList,
+      [uid]: {
+        listItem: e.target.value,
+        uid
       }
     };
-    setNoteState(newNoteState);
-    setListItemName("");
+    setCheckList(newCheckList);
+    setListItem("");
   };
   const handleChange = (e, item) => {
-    setNoteState({
-      ...noteState,
-      checkListItems: {
-        ...noteState.checkListItems,
-        [item.uid]: {
-          ...noteState.checkListItems[item.uid],
-          listItemName: e.target.value
-        }
+    setCheckList({
+      ...checkList,
+      [item.uid]: {
+        ...checkList[item.uid],
+        listItem: e.target.value
       }
     });
   };
@@ -47,54 +41,53 @@ function FormNoteList({ noteState, setNoteState, handleDeleteListItem }) {
       document.getElementById("listItemFormInput").focus();
     }
   };
-  return (
-    <DragDropContext
-      onDragEnd={result => {
-        if (
-          !result.destination ||
-          result.destination.index === result.source.index
-        ) {
-          return;
-        }
+  //TODO: refactor result function
+  const onDragEnd = result => {
+    const sourceIndex = result.source.index;
+    const destinationIndex = result.destination.index;
 
-        console.log(result);
-        let newCheckListItems = {};
-        const draggableId = result.draggableId;
-        const destinationIndex = result.destination.index;
-        let index = 0;
-        // debugger;
-        for (let prop in noteState.checkListItems) {
-          if (prop === draggableId) continue;
-          if (index === destinationIndex) {
-            newCheckListItems = {
-              ...newCheckListItems,
-              [draggableId]: {
-                ...noteState.checkListItems[draggableId]
-              }
-            };
-          }
-          newCheckListItems = {
-            ...newCheckListItems,
-            [prop]: {
-              ...noteState.checkListItems[prop]
-            }
+    if (!destinationIndex || destinationIndex === sourceIndex) {
+      return;
+    }
+    let movedItemId;
+    let newCheckList = Object.values(checkList)
+      .filter((listItem, index) => {
+        if (index !== sourceIndex) return true;
+        movedItemId = listItem.uid;
+        return false;
+      })
+      .reduce((newCheckList, listItem, index) => {
+        if (index === destinationIndex) {
+          newCheckList[movedItemId] = {
+            uid: movedItemId,
+            listItem: checkList[movedItemId].listItem
           };
-          index++;
         }
-        setNoteState({ ...noteState, checkListItems: newCheckListItems });
-        // debugger;
-      }}
-    >
+        newCheckList[listItem.uid] = {
+          uid: listItem.uid,
+          listItem: listItem.listItem
+        };
+        return newCheckList;
+      }, {});
+    if (Object.values(newCheckList).length !== destinationIndex + 1) {
+      newCheckList[movedItemId] = {
+        uid: movedItemId,
+        listItem: checkList[movedItemId].listItem
+      };
+    }
+    setCheckList(newCheckList);
+  };
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId="droppable">
         {(provided, snapshot) => (
           <ListContainer {...provided.droppableProps} ref={provided.innerRef}>
-            {Object.values(noteState.checkListItems).map((item, i, arr) => (
+            {Object.values(checkList).map((item, i, arr) => (
               <Draggable key={item.uid} draggableId={item.uid} index={i}>
                 {(provided, snapshot) => (
                   <ListItem
                     {...provided.draggableProps}
                     ref={provided.innerRef}
-                    // key={item.uid}
                   >
                     <span>
                       <Icon
@@ -104,26 +97,26 @@ function FormNoteList({ noteState, setNoteState, handleDeleteListItem }) {
                       <Checkbox type="checkbox" />
                       <ListItemFormInput
                         autoFocus={i === arr.length - 1}
-                        value={noteState.checkListItems[item.uid].listItemName}
+                        value={checkList[item.uid].listItem}
                         onChange={e => handleChange(e, item)}
                         onKeyUp={handleKeyUp}
                       />
                     </span>
-                    <Tool
+                    <IconButton
                       name={item.uid}
                       className="fas fa-times"
-                      onClick={handleDeleteListItem}
+                      onClick={deleteListItem}
                     />
                   </ListItem>
                 )}
               </Draggable>
             ))}
-
+            {provided.placeholder}
             <ListItemForm marginPlaceholder={snapshot.isDraggingOver}>
               <Icon className="fas fa-plus" />
               <ListItemFormInput
                 id="listItemFormInput"
-                value={listItemName}
+                value={listItem}
                 onChange={handleSubmit}
                 autoFocus
                 placeholder="Element listy"

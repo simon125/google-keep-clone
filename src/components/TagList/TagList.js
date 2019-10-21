@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function TagList({ noteState, setNoteState }) {
+export default function TagList({ tags, setTags }) {
   return (
     <>
       <ul
@@ -11,7 +11,7 @@ export default function TagList({ noteState, setNoteState }) {
           flexWrap: "wrap"
         }}
       >
-        {noteState.tags.map(tag => (
+        {tags.map(tag => (
           <li
             style={{
               color: "#666",
@@ -26,8 +26,8 @@ export default function TagList({ noteState, setNoteState }) {
             <span
               style={{ marginLeft: "2px", cursor: "pointer" }}
               onClick={() => {
-                const newTags = noteState.tags.filter(el => el !== tag);
-                setNoteState({ ...noteState, tags: newTags });
+                const newTags = tags.filter(el => el !== tag);
+                setTags(newTags);
               }}
             >
               <span className="fa fa-times fa-sm" />

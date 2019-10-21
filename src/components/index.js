@@ -1,6 +1,4 @@
-import Navigation from "./Navigation/Navigation";
-import Home from "./Home/Home";
-import Footer from "./Footer/Footer";
-import Notes from "./Notes/Notes";
+import Navigation from './Navigation/Navigation';
+import Footer from './Footer/Footer';
 
-export { Navigation, Home, Footer, Notes };
+export { Navigation, Footer };

@@ -19,7 +19,7 @@ export const TagFormContainer = styled.div`
 export const Icon = styled.span`
   margin-right: 13px;
 `;
-export const Tool = styled.button`
+export const IconButton = styled.button`
   color: #666;
   border: none;
   background: transparent;

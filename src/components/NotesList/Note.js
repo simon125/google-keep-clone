@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
-import Handle from "./Handle";
 const Container = styled.div`
   border: 1px solid lightgrey;
   border-radius: 4px;
@@ -14,9 +13,12 @@ const Container = styled.div`
       : "0px 0px 0px 0px rgba(0,0,0,0)"};
 `;
 
-function Task({ task, index }) {
+function Task({ note, index }) {
+  const noteToDisplay = note.note.trim();
+  const noteList = Object.values(note.checkList);
+
   return (
-    <Draggable draggableId={task.id} index={index}>
+    <Draggable draggableId={note.id} index={index}>
       {(provided, snapshot) => (
         <Container
           isDragging={snapshot.draggingOver}
@@ -24,7 +26,15 @@ function Task({ task, index }) {
           {...provided.dragHandleProps}
           ref={provided.innerRef}
         >
-          {task.content}
+          {noteToDisplay ? (
+            noteToDisplay
+          ) : (
+            <ul>
+              {noteList.map(note => (
+                <li key={note.uid}>{note.listItem}</li>
+              ))}
+            </ul>
+          )}
         </Container>
       )}
     </Draggable>
