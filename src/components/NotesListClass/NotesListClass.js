@@ -2,16 +2,24 @@ import React from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 
+//component did mount strzał do backu po strukture
+//component will unmount strzał do backu z zapisem struktury
+//lista zadań ma być dynamiczna
+//
+
 import initialData from './initialData';
 import Column from './Column';
-import { setLastIndex } from '../../redux/notes';
+import { setLastIndex, updateStructureLocally } from '../../redux/notes';
 import { connect } from 'react-redux';
 import {
   updatePositionOnNoteList,
   getNotesDB,
-  updateStructure
+  updateStructure,
+  getStructureFromDB
   //   getCurrentStructure
 } from '../../firebase/firebaseAPI';
+
+import equal from 'deep-equal';
 
 const Container = styled.div`
   display: flex;
@@ -19,19 +27,27 @@ const Container = styled.div`
 `;
 
 class NotesListClass extends React.Component {
-  state = {
-    notes: {},
-    columns: {},
-    columnOrder: ['column-1', 'column-2', 'column-3', 'column-4']
-  };
+  // state = {
+  //   notes: {},
+  //   columns: {},
+  //   columnOrder: ['column-1', 'column-2', 'column-3', 'column-4']
+  // };
 
-  componentDidUpdate(prevProps) {}
+  componentDidMount() {
+    getStructureFromDB();
+  }
 
-  static getDerivedStateFromProps(props, state) {}
+  componentDidUpdate(prevProps) {
+    if (!equal(prevProps.structure, this.props.structure)) {
+      updateStructure(this.props.structure);
+    }
+  }
+  /////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////
 
-  onDragEnd = (result) => {
+  onDragEndRedux = (result) => {
     const { destination, source, draggableId } = result;
-    debugger;
+
     if (!destination) {
       return;
     }
@@ -42,83 +58,75 @@ class NotesListClass extends React.Component {
     ) {
       return;
     }
-
     const start = this.props.structure[source.droppableId];
     const finish = this.props.structure[destination.droppableId];
 
     if (start === finish) {
-      const newTaskIds = Array.from(start.tasksIds);
-      newTaskIds.splice(source.index, 1);
-      newTaskIds.splice(destination.index, 0, draggableId);
+      const newTasksIds = Array.from(start.tasksIds);
+      newTasksIds.splice(source.index, 1);
+      newTasksIds.splice(destination.index, 0, draggableId);
 
       const newColumn = {
         ...start,
-        tasksIds: newTaskIds
+        tasksIds: newTasksIds
       };
 
-      const newState = {
-        ...this.state,
-        columns: {
-          ...this.props.structure,
-          [newColumn.id]: newColumn
-        }
+      const newStructure = {
+        ...this.props.structure,
+        [newColumn.id]: newColumn
       };
-      debugger;
-      updateStructure(newState.columns);
-      this.setState(newState);
+      this.props.updateStructureLocally(newStructure);
       return;
     }
-
     // Moving from one list to another
-    const startTaskIds = Array.from(start.tasksIds);
-    startTaskIds.splice(source.index, 1);
+    const startTasksIds = Array.from(start.tasksIds);
+    startTasksIds.splice(source.index, 1);
     const newStart = {
       ...start,
-      tasksIds: startTaskIds
+      tasksIds: startTasksIds
     };
 
-    const finishTaskIds = Array.from(finish.tasksIds);
-    finishTaskIds.splice(destination.index, 0, draggableId);
+    const finishTasksIds = Array.from(finish.tasksIds);
+    finishTasksIds.splice(destination.index, 0, draggableId);
     const newFinish = {
       ...finish,
-      tasksIds: finishTaskIds
+      tasksIds: finishTasksIds
     };
 
-    const newState = {
-      ...this.state,
-      columns: {
-        ...this.props.structure,
-        [newStart.id]: newStart,
-        [newFinish.id]: newFinish
-      }
+    const newStructure = {
+      ...this.props.structure,
+      [newStart.id]: newStart,
+      [newFinish.id]: newFinish
     };
-    debugger;
-    updateStructure(newState.columns);
-    this.setState(newState);
+
+    this.props.updateStructureLocally(newStructure);
   };
 
+  /////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////
   render() {
-    console.log(this.props);
-    const { structure, notes } = this.props;
+    const { notes, structure } = this.props;
+
     if (
-      Object.values(structure).reduce((sum, el) => {
-        return sum + el.tasksIds.length;
-      }, 0) === 0 ||
-      Object.keys(notes).length === 0
+      Object.keys(notes).length === 0 ||
+      Object.keys(structure).length === 0
     ) {
-      return <h1>Loading...</h1>;
+      return <h1>Loading</h1>;
     }
-    // debugger;
+    console.log('Notes lengts: ', Object.keys(notes).length);
+    console.log('Structure: ', structure);
+    console.log('Notes: ', notes);
     return (
-      <DragDropContext onDragEnd={this.onDragEnd}>
+      <DragDropContext onDragEnd={this.onDragEndRedux}>
         <Container>
-          {this.state.columnOrder.map((columnId) => {
-            const column = structure[columnId];
+          {['column-1', 'column-2', 'column-3'].map((columnId) => {
+            const column = this.props.structure[columnId];
             const tasks = column.tasksIds.map(
               (taskId) =>
-                Object.values(notes).filter((note) => note.uuid === taskId)[0]
+                Object.values(this.props.notes).filter(
+                  (note) => note.uuid === taskId
+                )[0]
             );
-            // debugger;
             return <Column key={column.id} column={column} tasks={tasks} />;
           })}
         </Container>
@@ -136,5 +144,5 @@ const mapStateToProps = (state) => {
 
 export default connect(
   mapStateToProps,
-  { setLastIndex }
+  { updateStructureLocally }
 )(NotesListClass);

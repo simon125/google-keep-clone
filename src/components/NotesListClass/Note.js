@@ -27,7 +27,7 @@ export default class Task extends React.Component {
             ref={provided.innerRef}
             isDragging={snapshot.isDragging}
           >
-            {this.props.task.note}
+            {this.props.task.uuid}
           </Container>
         )}
       </Draggable>

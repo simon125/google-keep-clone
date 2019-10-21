@@ -5,6 +5,7 @@ const GET_NOTES = 'GET_NOTES';
 const GET_TAGS = 'GET_TAGS';
 const SET_LAST_INDEX = 'SET_LAST_INDEX';
 const GET_NOTE_STRUCTURE = 'GET_NOTE_STRUCTURE';
+const UPDATE_STRUCTURE = 'UPDATE_STRUCTURE';
 
 export const addNote = (note) => (dispatch, getState) => {
   addNoteToDB(note);
@@ -37,9 +38,16 @@ export const getNoteStructure = (noteStructure) => {
     payload: noteStructure
   };
 };
+export const updateStructureLocally = (newStructure) => {
+  return {
+    type: UPDATE_STRUCTURE,
+    payload: newStructure
+  };
+};
 
 const initialState = {
   notes: [],
+  structure: {},
   tags: [],
   noteStructure: {},
   lastIndex: 0
@@ -63,6 +71,13 @@ export const notes = (state = initialState, action) => {
         lastIndex: action.payload
       };
     case 'GET_NOTE_STRUCTURE':
+      return {
+        ...state,
+        noteStructure: action.payload
+      };
+    case 'UPDATE_STRUCTURE':
+      debugger;
+
       return {
         ...state,
         noteStructure: action.payload

@@ -1,7 +1,12 @@
 import { app } from './firebaseConfig';
 import 'firebase/firestore';
 import { store } from '../redux/storeConfig';
-import { getNotes, getTags, getNoteStructure } from '../redux/notes';
+import {
+  getNotes,
+  getTags,
+  getNoteStructure,
+  updateStructureLocally
+} from '../redux/notes';
 import * as firebase from 'firebase/app';
 
 const db = app.firestore();
@@ -34,16 +39,37 @@ db.collection('tags').onSnapshot(
 
 db.collection('structure')
   .doc('notes')
-  .get()
-  .then(
-    function(doc) {
+  .onSnapshot(
+    (doc) => {
+      // console.log('Current data: ', );
+      // const tags = [];
+      // snapshot.forEach((el) => {
+      //   tags.push({ ...el.data(), id: el.id });
+      // });
+
+      // snapshot
       store.dispatch(getNoteStructure(doc.data()));
-      debugger;
     },
-    function(error) {
-      //...
+    (err) => {
+      console.log(err);
     }
   );
+
+export const getStructureFromDB = () => {
+  return db
+    .collection('structure')
+    .doc('notes')
+    .get()
+    .then(
+      function(doc) {
+        store.dispatch(getNoteStructure(doc.data()));
+        debugger;
+      },
+      function(error) {
+        //...
+      }
+    );
+};
 
 export const pushUidToStructure = (uuid) => {
   return db
@@ -108,7 +134,9 @@ export const addNoteToDB = (note) => {
   return db
     .collection('test1')
     .add(note)
-    .then(() => pushUidToStructure(note.uuid))
+    .then(() => {
+      pushUidToStructure(note.uuid);
+    })
     .catch((err) => console.error(err));
 };
 export const removeNoteFromDB = (note, column) => {

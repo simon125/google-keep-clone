@@ -12,7 +12,7 @@ import TagList from '../TagList/TagList';
 import NotesFormMenu from './NotesFormFooter';
 import TextareaAutosize from 'react-autosize-textarea';
 import { connect } from 'react-redux';
-import { addNote } from '../../redux/notes';
+import { addNote, updateStructureLocally } from '../../redux/notes';
 import { pushUidToStructure } from '../../firebase/firebaseAPI';
 import {
   getListBasedOnLineTextBreak,
@@ -20,7 +20,7 @@ import {
   checkIfTargetIsForm
 } from '../../utils';
 
-function NoteForm({ addNote, lastIndex }) {
+function NoteForm({ addNote, updateStructureLocally }) {
   const [title, setTitle] = useState('');
   const [note, setNote] = useState('');
   const [checkList, setCheckList] = useState({});
@@ -73,7 +73,6 @@ function NoteForm({ addNote, lastIndex }) {
         tags,
         bgColor,
         column: 1,
-        row: lastIndex,
         uuid: newUuid
       };
       addNote(newNote);
@@ -156,12 +155,13 @@ function NoteForm({ addNote, lastIndex }) {
 }
 const mapStateToProps = (state) => {
   return {
-    lastIndex: state.notes.lastIndex
+    structure: { ...state.notes.noteStructure }
   };
 };
 
 const mapDispatchToProps = {
-  addNote
+  addNote,
+  updateStructureLocally
 };
 
 export default connect(

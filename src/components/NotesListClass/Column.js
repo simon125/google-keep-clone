@@ -38,7 +38,6 @@ export default class Column extends React.Component {
               {this.props.tasks
                 .sort((a, b) => a.row - b.row)
                 .map((task, index) => {
-                  // debugger;
                   return <Task key={task.uuid} task={task} index={index} />;
                 })}
               {provided.placeholder}
