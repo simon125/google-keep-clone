@@ -30,3 +30,7 @@ You can easyli check the current version [here](https://keep-clone-app.firebasea
 - refactor of names of files/directories/components
 - end funcionalities
 - fix bugs (problem with dnd in form)
+
+## Latest bugs
+
+- still problem with creating new account trough google/facebook
