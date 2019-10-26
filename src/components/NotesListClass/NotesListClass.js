@@ -1,22 +1,12 @@
 import React from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components';
-
-//component did mount strzał do backu po strukture
-//component will unmount strzał do backu z zapisem struktury
-//lista zadań ma być dynamiczna
-//
-
-import initialData from './initialData';
 import Column from './Column';
-import { setLastIndex, updateStructureLocally } from '../../redux/notes';
+import { updateStructureLocally } from '../../redux/notes';
 import { connect } from 'react-redux';
 import {
-  updatePositionOnNoteList,
-  getNotesDB,
   updateStructure,
   getStructureFromDB
-  //   getCurrentStructure
 } from '../../firebase/firebaseAPI';
 
 import equal from 'deep-equal';
@@ -27,12 +17,6 @@ const Container = styled.div`
 `;
 
 class NotesListClass extends React.Component {
-  // state = {
-  //   notes: {},
-  //   columns: {},
-  //   columnOrder: ['column-1', 'column-2', 'column-3', 'column-4']
-  // };
-
   componentDidMount() {
     getStructureFromDB();
   }
@@ -42,8 +26,6 @@ class NotesListClass extends React.Component {
       updateStructure(this.props.structure);
     }
   }
-  /////////////////////////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////////////////////////
 
   onDragEndRedux = (result) => {
     const { destination, source, draggableId } = result;
@@ -102,8 +84,6 @@ class NotesListClass extends React.Component {
     this.props.updateStructureLocally(newStructure);
   };
 
-  /////////////////////////////////////////////////////////////////////////////////////
-  /////////////////////////////////////////////////////////////////////////////////////
   render() {
     const { notes, structure } = this.props;
 
@@ -113,13 +93,10 @@ class NotesListClass extends React.Component {
     ) {
       return <h1>Loading</h1>;
     }
-    console.log('Notes lengts: ', Object.keys(notes).length);
-    console.log('Structure: ', structure);
-    console.log('Notes: ', notes);
     return (
       <DragDropContext onDragEnd={this.onDragEndRedux}>
         <Container>
-          {['column-1', 'column-2', 'column-3'].map((columnId) => {
+          {['column-1', 'column-2', 'column-3', 'column-4'].map((columnId) => {
             const column = this.props.structure[columnId];
             const tasks = column.tasksIds.map(
               (taskId) =>

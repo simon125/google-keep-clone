@@ -1,9 +1,6 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 export const AppContainer = styled.div`
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   background-color: #fcfcfc;
 `;
 export const Card = styled.div`
@@ -19,5 +16,5 @@ export const Card = styled.div`
   }
 `;
 export const Icon = styled.span`
-  color: ${props => (props.color ? props.color : "#fff")};
+  color: ${(props) => (props.color ? props.color : '#fff')};
 `;

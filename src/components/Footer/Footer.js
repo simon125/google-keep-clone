@@ -1,8 +1,8 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
 const FooterContainer = styled.footer`
-  height: 70px;
+  height: 8vh;
   text-align: center;
   background: #f4b400;
   line-height: 70px;

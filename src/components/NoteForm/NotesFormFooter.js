@@ -10,17 +10,21 @@ function NotesFormFooter({
   setBgColor,
   handleToggleClick,
   handleCloseClick,
-  noteEditorMode
+  noteEditorMode,
+  closeOption = true,
+  isHovered,
+  children
 }) {
   return (
-    <FormToolsGroup>
+    <FormToolsGroup isHovered={isHovered}>
       <IconButton
         className={noteEditorMode ? 'far fa-clipboard' : 'fas fa-list-ul'}
         onClick={handleToggleClick}
       />
       <TagWidget chosenTags={chosenTags} setTags={setTags} />
       <ColorPicker chosenColor={bgColor} setBgColor={setBgColor} />
-      <CloseBtn onClick={handleCloseClick}>Zamknij</CloseBtn>
+      {closeOption && <CloseBtn onClick={handleCloseClick}>Zamknij</CloseBtn>}
+      {children}
     </FormToolsGroup>
   );
 }

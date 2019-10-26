@@ -7,11 +7,11 @@ import {
   Color
 } from './ColorPickerElements';
 
-function ColorPicker({ setBgColor, chosenColor = 'transparent' }) {
+function ColorPicker({ setBgColor, chosenColor = 'rgba(255,255,255,0.8)' }) {
   const [isPalleteOpen, setIsPalleteOpen] = useState(false);
   const [hideTime, setHideTime] = useState(null);
   const colors = [
-    'transparent',
+    'rgba(255,255,255,0.8)',
     '#f28b82',
     '#fbbc04',
     '#fff475',

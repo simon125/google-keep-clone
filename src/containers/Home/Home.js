@@ -5,7 +5,9 @@ import styled from 'styled-components';
 const HomeContainer = styled.div`
   display: flex;
   justify-content: center;
-  align-content: center;
+  align-items: center;
+  min-height: 84vh;
+  box-sizing: border-box;
 `;
 
 function Home() {

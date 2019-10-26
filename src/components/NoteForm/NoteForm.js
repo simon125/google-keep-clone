@@ -9,11 +9,10 @@ import {
 } from './NoteFormElements';
 import FormNoteList from '../FormNoteList/FormNoteList';
 import TagList from '../TagList/TagList';
-import NotesFormMenu from './NotesFormFooter';
+import NotesFormFooter from './NotesFormFooter';
 import TextareaAutosize from 'react-autosize-textarea';
 import { connect } from 'react-redux';
 import { addNote, updateStructureLocally } from '../../redux/notes';
-import { pushUidToStructure } from '../../firebase/firebaseAPI';
 import {
   getListBasedOnLineTextBreak,
   getSingleNoteBasedOnList,
@@ -140,7 +139,7 @@ function NoteForm({ addNote, updateStructureLocally }) {
       <TagList tags={tags} setTags={setTags} />
 
       {isInputOpen && (
-        <NotesFormMenu
+        <NotesFormFooter
           chosenTags={tags}
           setTags={setTags}
           bgColor={bgColor}

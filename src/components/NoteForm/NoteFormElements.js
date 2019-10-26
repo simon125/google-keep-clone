@@ -1,11 +1,13 @@
 import styled from 'styled-components';
 
 export const NotesContainer = styled.section`
-  height: 75vh;
+  box-sizing: border-box;
+  padding-top: 50px;
+  min-height: 84vh;
 `;
 export const FormContainer = styled.div`
   margin: 0 auto;
-  width: 60%;
+  width: 600px;
   min-height: 60px;
   transition: background 0.2s;
   background: ${(props) =>
@@ -22,6 +24,8 @@ export const FormGroup = styled.div`
 export const FormToolsGroup = styled(FormGroup)`
   margin: 20px 20px 0 20px;
   align-items: center;
+  transition: opacity 200ms;
+  opacity: ${(props) => (props.isHovered ? 1 : 0)};
 `;
 // export const Icon = styled.span`
 //   width: 27px;
@@ -32,14 +36,16 @@ export const Icon = styled.span`
   cursor: pointer;
 `;
 export const IconButton = styled.button`
+  opacity: ${(props) => (props.opacity ? props.opacity : '1')}
   color: #666;
   border: none;
-  margin-right: 15px;
+  margin-right: ${(props) => (props.margin ? props.margin : '15px')};
   background: transparent;
   outline: none;
   cursor: pointer;
   &:hover {
     color: #333;
+    cursor: pointer;
   }
 `;
 export const TitleField = styled.input`
