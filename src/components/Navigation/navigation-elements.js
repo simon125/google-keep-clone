@@ -1,7 +1,7 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const Nav = styled.nav`
-  height: 80px;
+  height: 8vh;
   background-color: #f4b400;
   display: flex;
   justify-content: space-between;
@@ -49,7 +49,7 @@ export const MobileLinksGroup = styled.ul`
   border: none;
   transition: all 0.3s;
   overflow: hidden;
-  height ${props => (props.isOpen ? "100vh" : "0")};
+  height ${(props) => (props.isOpen ? '100vh' : '0')};
   position: fixed;
   top: 0;
   left: 0;

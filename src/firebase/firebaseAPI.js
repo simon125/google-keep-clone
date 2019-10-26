@@ -55,6 +55,21 @@ db.collection('structure')
     }
   );
 
+export const updateNote = (color, id) => {
+  db.collection('test1')
+    .doc(id)
+    .update({
+      bgColor: color
+    })
+    .then(function() {
+      console.log('Document successfully updated!');
+    })
+    .catch(function(error) {
+      // The document probably doesn't exist.
+      console.error('Error updating document: ', error);
+    });
+};
+
 export const getStructureFromDB = () => {
   return db
     .collection('structure')
