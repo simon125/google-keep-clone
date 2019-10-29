@@ -28,9 +28,10 @@ You can easyli check the current version [here](https://keep-clone-app.firebasea
 ## TODO
 
 - refactor of names of files/directories/components
+- change approach to redux redux thunk calling firebase methods - refactor redux
 - end funcionalities
-- fix bugs (problem with dnd in form)
 
 ## Latest bugs
 
 - still problem with creating new account trough google/facebook
+- problem with highlighting inputs after onblur evt 
