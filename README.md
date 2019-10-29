@@ -27,7 +27,7 @@ You can easyli check the current version [here](https://keep-clone-app.firebasea
 
 ## TODO
 
-- refactor of names of files/directories/components
+- refactor some of names of files/directories/components
 - change approach to redux redux thunk calling firebase methods - refactor redux
 - end funcionalities
 
