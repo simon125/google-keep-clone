@@ -12,6 +12,8 @@ const Container = styled.div`
   margin-bottom: 15px;
   background-color: ${(props) => props.bgColor};
   transition: background-color 300ms;
+  box-shadow: ${(props) =>
+    props.isHovered ? '0px 0px 5px -2px rgba(0,0,0,0.75)' : ''};
 `;
 
 const Title = styled.h4`
@@ -54,6 +56,10 @@ export default class Task extends React.Component {
     this.setState({ isHovered: false });
   };
 
+  toggleStatus = (e) => {
+    updateNote('checkList', this.props.checkList.map(), this.props.id);
+  };
+
   render() {
     const {
       task: { title, note, bgColor, tags, checkList, isPinned, id }
@@ -69,9 +75,78 @@ export default class Task extends React.Component {
               return /*<p key={phrase + Math.random()}>{*/ phrase /*}</p>*/;
             }
           })
-        : Object.values(checkList).map((listItem) => {
-            return <li key={listItem.listItem}>{listItem.listItem}</li>;
-          });
+        : Object.values(checkList).reduce(
+            (listsToDisplay, listItem) => {
+              const itemToDisplay = (
+                <li
+                  style={{
+                    listStyle: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    marginBottom: '5px'
+                  }}
+                  key={listItem.uuid}
+                >
+                  <label style={{ marginRight: '8px' }}>
+                    {listItem.status ? (
+                      <i
+                        style={{ color: '#555' }}
+                        className="far fa-check-square"
+                      ></i>
+                    ) : (
+                      <i
+                        style={{ color: '#555' }}
+                        className="far fa-square"
+                      ></i>
+                    )}
+                    <input
+                      onClick={() => {
+                        console.log(checkList);
+                        console.log(listItem.uid);
+                        const newCheckList = { ...checkList };
+                        newCheckList[listItem.uid].status = !newCheckList[
+                          listItem.uid
+                        ].status;
+                        updateNote('checkList', newCheckList, id);
+                        // checkList[listItem.uid].status
+                      }}
+                      style={{ display: 'none' }}
+                      type="checkbox"
+                    />
+                  </label>
+                  <span
+                    style={{
+                      textDecoration: listItem.status ? 'line-through' : ''
+                    }}
+                  >
+                    {listItem.listItem}
+                  </span>
+                </li>
+              );
+
+              if (!listItem.status) {
+                return [
+                  [...listsToDisplay[0], itemToDisplay],
+                  [...listsToDisplay[1]]
+                ];
+              } else {
+                return [
+                  [...listsToDisplay[0]],
+                  [
+                    <p
+                      style={{
+                        margin: '5px 0',
+                        borderTop: '1px solid rgb(205,205,205)'
+                      }}
+                    />,
+                    ...listsToDisplay[1],
+                    itemToDisplay
+                  ]
+                ];
+              }
+            },
+            [[], []]
+          );
 
     return (
       <Draggable draggableId={this.props.task.uuid} index={this.props.index}>
@@ -79,6 +154,7 @@ export default class Task extends React.Component {
           <Container
             onMouseOver={this.handleMouseOver}
             onMouseLeave={this.handleMouseLeave}
+            isHovered={this.state.isHovered}
             bgColor={this.props.task.bgColor}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
@@ -87,9 +163,30 @@ export default class Task extends React.Component {
           >
             <NoteContent {...provided.dragHandleProps}>
               {title !== '' && (
-                <Title {...provided.dragHandleProps}>{title}</Title>
+                <Title {...provided.dragHandleProps}>
+                  {title}
+                  <IconButton
+                    style={{
+                      float: 'right',
+                      marginRight: '0',
+                      opacity: this.state.isHovered ? 1 : 0
+                    }}
+                    className={isPinned ? 'icon-pin' : 'icon-pin-outline'}
+                    onClick={() => updateNote('isPinned', !isPinned, id)}
+                  />
+                </Title>
               )}
-
+              {title === '' && (
+                <IconButton
+                  style={{
+                    float: 'right',
+                    marginRight: '0',
+                    opacity: this.state.isHovered ? 1 : 0
+                  }}
+                  className={isPinned ? 'icon-pin' : 'icon-pin-outline'}
+                  onClick={() => updateNote('isPinned', !isPinned, id)}
+                />
+              )}
               {content}
             </NoteContent>
             <NotesFormFooter
@@ -100,7 +197,7 @@ export default class Task extends React.Component {
               }}
               bgColor={bgColor}
               setBgColor={(color) => {
-                updateNote(color, id);
+                updateNote('bgColor', color, id);
                 console.log(this.state.stage);
               }}
               noteEditorMode={note.trim() !== ''}

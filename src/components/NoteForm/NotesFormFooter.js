@@ -12,7 +12,7 @@ function NotesFormFooter({
   handleCloseClick,
   noteEditorMode,
   closeOption = true,
-  isHovered,
+  isHovered = true,
   children
 }) {
   return (

@@ -55,11 +55,11 @@ db.collection('structure')
     }
   );
 
-export const updateNote = (color, id) => {
+export const updateNote = (field, payload, id) => {
   db.collection('test1')
     .doc(id)
     .update({
-      bgColor: color
+      [field]: payload
     })
     .then(function() {
       console.log('Document successfully updated!');
@@ -69,6 +69,21 @@ export const updateNote = (color, id) => {
       console.error('Error updating document: ', error);
     });
 };
+
+// export const updateNote = (checkList, id) => {
+//   db.collection('test1')
+//     .doc(id)
+//     .update({
+//       checkList
+//     })
+//     .then(function() {
+//       console.log('Document successfully updated!');
+//     })
+//     .catch(function(error) {
+//       // The document probably doesn't exist.
+//       console.error('Error updating document: ', error);
+//     });
+// };
 
 export const getStructureFromDB = () => {
   return db
