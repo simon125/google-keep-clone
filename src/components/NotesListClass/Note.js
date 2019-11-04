@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { Draggable } from 'react-beautiful-dnd';
 import { IconButton } from '../NoteForm/NoteFormElements';
 import NotesFormFooter from '../NoteForm/NotesFormFooter';
-import { updateNote } from '../../firebase/firebaseAPI';
+import { updateNote, addTagToDB } from '../../firebase/firebaseAPI';
+import TagList from '../TagList/TagList';
 
 const Container = styled.div`
   border: 1px solid lightgrey;
@@ -66,7 +67,7 @@ export default class Task extends React.Component {
     } = this.props;
     debugger;
 
-    const content =
+    let content =
       Object.values(checkList).length === 0
         ? note.split('\n').map((phrase) => {
             if (phrase.length > 10) {
@@ -132,21 +133,25 @@ export default class Task extends React.Component {
               } else {
                 return [
                   [...listsToDisplay[0]],
-                  [
-                    <p
-                      style={{
-                        margin: '5px 0',
-                        borderTop: '1px solid rgb(205,205,205)'
-                      }}
-                    />,
-                    ...listsToDisplay[1],
-                    itemToDisplay
-                  ]
+                  [...listsToDisplay[1], itemToDisplay]
                 ];
               }
             },
             [[], []]
           );
+
+    if (content.length > 1 && content[0].length > 0 && content[1].length > 0) {
+      content = [
+        ...content[0],
+        <p
+          style={{
+            margin: '5px 0',
+            borderTop: '1px solid rgb(205,205,205)'
+          }}
+        />,
+        ...content[1]
+      ];
+    }
 
     return (
       <Draggable draggableId={this.props.task.uuid} index={this.props.index}>
@@ -189,11 +194,18 @@ export default class Task extends React.Component {
               )}
               {content}
             </NoteContent>
+            <TagList
+              size="small"
+              tags={tags}
+              setTags={(newTags) => updateNote('tags', [...newTags], id)}
+            />
+
             <NotesFormFooter
               isHovered={this.state.isHovered}
               chosenTags={tags}
-              setTags={() => {
-                console.log(123);
+              setTags={(newTags) => {
+                updateNote('tags', [...newTags], id);
+                // addTagToDB(tag);
               }}
               bgColor={bgColor}
               setBgColor={(color) => {
