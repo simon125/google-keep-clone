@@ -1,10 +1,17 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { Draggable } from 'react-beautiful-dnd';
 import { IconButton } from '../NoteForm/NoteFormElements';
 import NotesFormFooter from '../NoteForm/NotesFormFooter';
-import { updateNote, addTagToDB } from '../../firebase/firebaseAPI';
+import {
+  updateNote,
+  addTagToDB,
+  removeNoteFromDB
+} from '../../firebase/firebaseAPI';
+import { updateStructureLocally, deleteNote } from '../../redux/notes';
 import TagList from '../TagList/TagList';
+import cloneDeep from 'clone-deep';
 
 const Container = styled.div`
   border: 1px solid lightgrey;
@@ -36,10 +43,10 @@ const NoteContent = styled.div`
   padding-right: 15px;
 `;
 
-export default class Task extends React.Component {
+class Task extends React.Component {
   state = {
     isHovered: false,
-    stage: Math.random()
+    isContextMenuOpen: false
   };
 
   getSplitedPhrases = (str) => {
@@ -63,9 +70,9 @@ export default class Task extends React.Component {
 
   render() {
     const {
-      task: { title, note, bgColor, tags, checkList, isPinned, id }
+      task: { title, note, bgColor, tags, checkList, isPinned, id, uuid },
+      column
     } = this.props;
-    debugger;
 
     let content =
       Object.values(checkList).length === 0
@@ -210,17 +217,83 @@ export default class Task extends React.Component {
               bgColor={bgColor}
               setBgColor={(color) => {
                 updateNote('bgColor', color, id);
-                console.log(this.state.stage);
               }}
               noteEditorMode={note.trim() !== ''}
               handleToggleClick={() => {}}
               closeOption={false}
             >
               <IconButton
-                style={{ marginLeft: '12px' }}
+                style={{
+                  marginLeft: '12px',
+                  position: 'relative',
+                  cursor: 'pointer'
+                }}
                 className={'fas fa-ellipsis-v'}
-                onClick={() => console.log(123)}
-              />
+                onClick={() =>
+                  this.setState((state) => ({
+                    isContextMenuOpen: !state.isContextMenuOpen
+                  }))
+                }
+              >
+                {this.state.isContextMenuOpen && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '10px',
+                      left: '10px',
+                      width: '150px',
+                      overflow: 'hidden'
+                    }}
+                  >
+                    <ul
+                      style={{
+                        width: '100%',
+                        listStyle: 'none',
+                        border: '1px solid rgba(100,100,100,0.2)',
+                        backgroundColor: 'white',
+                        boxShadow: '0px 0px 5px -2px rgba(0,0,0,0.75)',
+                        color: 'rgba(10,10,10,0.6)'
+                      }}
+                    >
+                      <li
+                        onClick={() => {
+                          debugger;
+
+                          const newStructure = cloneDeep(
+                            this.props.noteStructure
+                          );
+                          debugger;
+                          newStructure[column].tasksIds = newStructure[
+                            column
+                          ].tasksIds.filter((taskId) => taskId !== uuid);
+
+                          // // console.log(this.props);
+                          this.props.deleteNote(this.props.task);
+                          this.props.updateStructureLocally(newStructure);
+                          removeNoteFromDB(this.props.task, column);
+                        }}
+                        style={{
+                          padding: '6px 10px',
+                          textAlign: 'left',
+                          fontWeight: '200',
+                          width: '100%'
+                        }}
+                      >
+                        Usuń notatkę
+                      </li>
+                      <li
+                        style={{
+                          padding: '6px 10px',
+                          textAlign: 'left',
+                          fontWeight: '200'
+                        }}
+                      >
+                        Placeholder
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </IconButton>
             </NotesFormFooter>
           </Container>
         )}
@@ -228,3 +301,13 @@ export default class Task extends React.Component {
     );
   }
 }
+const mapStateToProps = (state) => {
+  return {
+    noteStructure: state.notes.noteStructure
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  { updateStructureLocally, deleteNote }
+)(Task);

@@ -1,6 +1,6 @@
 import { addNoteToDB, addTagToDB } from '../firebase/firebaseAPI';
 
-const DELETE_NOTE = 'DELETE_NOTE';
+const REMOVE_NOTE = 'REMOVE_NOTE';
 const GET_NOTES = 'GET_NOTES';
 const GET_TAGS = 'GET_TAGS';
 const SET_LAST_INDEX = 'SET_LAST_INDEX';
@@ -16,6 +16,10 @@ export const getNotes = (notes) => {
     payload: notes
   };
 };
+export const deleteNote = (note) => ({
+  type: REMOVE_NOTE,
+  payload: note.id
+});
 export const addTag = (tag) => (dispatch, getState) => {
   addTagToDB(tag);
 };
@@ -59,6 +63,18 @@ export const notes = (state = initialState, action) => {
       return {
         ...state,
         notes: action.payload
+      };
+    case 'REMOVE_NOTE':
+      const newNotes = {};
+      for (let prop in state.notes) {
+        if (prop !== action.payload) {
+          newNotes[prop] = state.notes[prop];
+        }
+      }
+      debugger;
+      return {
+        ...state,
+        notes: { ...newNotes }
       };
     case 'GET_TAGS':
       return {

@@ -34,7 +34,15 @@ export default class Column extends React.Component {
               {this.props.tasks
                 .sort((a, b) => a.row - b.row)
                 .map((task, index) => {
-                  return <Task key={task.uuid} task={task} index={index} />;
+                  debugger;
+                  return (
+                    <Task
+                      column={this.props.column.id}
+                      key={task.uuid}
+                      task={task}
+                      index={index}
+                    />
+                  );
                 })}
               {provided.placeholder}
             </TaskList>

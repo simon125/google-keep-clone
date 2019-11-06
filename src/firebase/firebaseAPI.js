@@ -17,6 +17,7 @@ db.collection('test1').onSnapshot(
     snapshot.forEach((el) => {
       notes[el.id] = { ...el.data(), id: el.id };
     });
+    debugger;
     store.dispatch(getNotes(notes));
   },
   (err) => {
@@ -170,6 +171,7 @@ export const addNoteToDB = (note) => {
     .catch((err) => console.error(err));
 };
 export const removeNoteFromDB = (note, column) => {
+  debugger;
   return db
     .collection('test1')
     .doc(note.id)
@@ -178,9 +180,7 @@ export const removeNoteFromDB = (note, column) => {
     .catch((err) => console.error(err));
 };
 
-export const deleteNote = (id) => {
-  console.log('note deleted');
-};
+export const deleteNote = (id) => {};
 
 export const editNote = (id) => {
   console.log('note editet');
