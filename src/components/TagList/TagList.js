@@ -8,7 +8,8 @@ export default function TagList({ tags, setTags, size = 'medium' }) {
           margin: size === 'small' ? '0 10px' : '0 15px',
           display: 'flex',
           listStyle: 'none',
-          flexWrap: 'wrap'
+          flexWrap: 'wrap',
+          cursor: 'default'
         }}
       >
         {tags.map((tag) => (

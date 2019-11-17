@@ -71,7 +71,6 @@ export const notes = (state = initialState, action) => {
           newNotes[prop] = state.notes[prop];
         }
       }
-      debugger;
       return {
         ...state,
         notes: { ...newNotes }
@@ -92,8 +91,6 @@ export const notes = (state = initialState, action) => {
         noteStructure: action.payload
       };
     case 'UPDATE_STRUCTURE':
-      debugger;
-
       return {
         ...state,
         noteStructure: action.payload

@@ -4,6 +4,9 @@ export const NotesContainer = styled.section`
   box-sizing: border-box;
   padding-top: 50px;
   min-height: 84vh;
+  @media (max-width: 959px) {
+    min-height: calc(100vh - 100px);
+  }
 `;
 export const FormContainer = styled.div`
   margin: 0 auto;

@@ -4,8 +4,8 @@ import { store } from '../redux/storeConfig';
 import {
   getNotes,
   getTags,
-  getNoteStructure,
-  updateStructureLocally
+  getNoteStructure
+  // updateStructureLocally
 } from '../redux/notes';
 import * as firebase from 'firebase/app';
 
@@ -17,7 +17,6 @@ db.collection('test1').onSnapshot(
     snapshot.forEach((el) => {
       notes[el.id] = { ...el.data(), id: el.id };
     });
-    debugger;
     store.dispatch(getNotes(notes));
   },
   (err) => {
@@ -56,17 +55,17 @@ db.collection('structure')
     }
   );
 
-export const updateNote = (field, payload, id) => {
+export const updateNote = (fields, id) => {
+  debugger;
   db.collection('test1')
     .doc(id)
-    .update({
-      [field]: payload
-    })
+    .update(fields)
     .then(function() {
+      debugger;
       console.log('Document successfully updated!');
     })
     .catch(function(error) {
-      // The document probably doesn't exist.
+      debugger;
       console.error('Error updating document: ', error);
     });
 };
@@ -94,7 +93,6 @@ export const getStructureFromDB = () => {
     .then(
       function(doc) {
         store.dispatch(getNoteStructure(doc.data()));
-        debugger;
       },
       function(error) {
         //...
@@ -171,7 +169,6 @@ export const addNoteToDB = (note) => {
     .catch((err) => console.error(err));
 };
 export const removeNoteFromDB = (note, column) => {
-  debugger;
   return db
     .collection('test1')
     .doc(note.id)

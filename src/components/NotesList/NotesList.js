@@ -1,6 +1,5 @@
 import React from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
-import styled from 'styled-components';
 import Column from './Column';
 import { updateStructureLocally } from '../../redux/notes';
 import { connect } from 'react-redux';
@@ -8,15 +7,10 @@ import {
   updateStructure,
   getStructureFromDB
 } from '../../firebase/firebaseAPI';
-
 import equal from 'deep-equal';
+import { Container } from './notes-list-elements';
 
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
-class NotesListClass extends React.Component {
+class NotesList extends React.Component {
   componentDidMount() {
     getStructureFromDB();
   }
@@ -97,12 +91,10 @@ class NotesListClass extends React.Component {
       <DragDropContext onDragEnd={this.onDragEndRedux}>
         <Container>
           {['column-1', 'column-2', 'column-3', 'column-4'].map((columnId) => {
-            const column = this.props.structure[columnId];
+            const column = structure[columnId];
             const tasks = column.tasksIds.map(
               (taskId) =>
-                Object.values(this.props.notes).filter(
-                  (note) => note.uuid === taskId
-                )[0]
+                Object.values(notes).filter((note) => note.uuid === taskId)[0]
             );
             return <Column key={column.id} column={column} tasks={tasks} />;
           })}
@@ -119,7 +111,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  { updateStructureLocally }
-)(NotesListClass);
+export default connect(mapStateToProps, { updateStructureLocally })(NotesList);

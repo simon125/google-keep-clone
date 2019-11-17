@@ -16,7 +16,7 @@ function NotesFormFooter({
   children
 }) {
   return (
-    <FormToolsGroup isHovered={isHovered}>
+    <FormToolsGroup style={{ cursor: 'default' }} isHovered={isHovered}>
       <IconButton
         className={noteEditorMode ? 'far fa-clipboard' : 'fas fa-list-ul'}
         onClick={handleToggleClick}
