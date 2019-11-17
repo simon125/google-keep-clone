@@ -8,6 +8,9 @@ const HomeContainer = styled.div`
   align-items: center;
   min-height: 84vh;
   box-sizing: border-box;
+  @media (max-width: 959px) {
+    min-height: calc(100vh - 100px);
+  }
 `;
 
 function Home() {

@@ -4,6 +4,9 @@ export const NotesContainer = styled.section`
   box-sizing: border-box;
   padding-top: 50px;
   min-height: 84vh;
+  @media (max-width: 959px) {
+    min-height: calc(100vh - 100px);
+  }
 `;
 export const FormContainer = styled.div`
   margin: 0 auto;
@@ -22,7 +25,7 @@ export const FormGroup = styled.div`
   justify-content: space-between;
 `;
 export const FormToolsGroup = styled(FormGroup)`
-  margin: 20px 20px 0 20px;
+  margin: 10px 20px 0 20px;
   align-items: center;
   transition: opacity 200ms;
   opacity: ${(props) => (props.isHovered ? 1 : 0)};
