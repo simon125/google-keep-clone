@@ -164,6 +164,17 @@ class Task extends React.Component {
                   />
                 </Title>
               )}
+              {title === '' && (
+                <IconButton
+                  style={{
+                    float: 'right',
+                    marginRight: '0',
+                    opacity: isHovered ? 1 : 0
+                  }}
+                  className={isPinned ? 'icon-pin' : 'icon-pin-outline'}
+                  onClick={() => updateNote({ isPinned: !isPinned }, id)}
+                />
+              )}
               {content}
             </NoteContent>
             <TagList
