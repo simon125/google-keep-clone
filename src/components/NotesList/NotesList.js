@@ -10,6 +10,9 @@ import {
 import equal from 'deep-equal';
 import { Container } from './notes-list-elements';
 
+const NOT_PINNED_COLUMNS = ['column-1', 'column-2', 'column-3', 'column-4'];
+const PINNED_COLUMNS = ['column-5', 'column-6', 'column-7', 'column-8'];
+
 class NotesList extends React.Component {
   componentDidMount() {
     getStructureFromDB();
@@ -79,8 +82,8 @@ class NotesList extends React.Component {
   };
 
   render() {
-    const { notes, structure } = this.props;
-
+    const { notes, structure, isPinnedList = false } = this.props;
+    const columns = isPinnedList ? PINNED_COLUMNS : NOT_PINNED_COLUMNS;
     if (
       Object.keys(notes).length === 0 ||
       Object.keys(structure).length === 0
@@ -90,7 +93,7 @@ class NotesList extends React.Component {
     return (
       <DragDropContext onDragEnd={this.onDragEndRedux}>
         <Container>
-          {['column-1', 'column-2', 'column-3', 'column-4'].map((columnId) => {
+          {columns.map((columnId) => {
             const column = structure[columnId];
             const tasks = column.tasksIds.map(
               (taskId) =>

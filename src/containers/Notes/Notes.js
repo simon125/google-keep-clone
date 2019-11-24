@@ -7,7 +7,8 @@ function Notes() {
   return (
     <NotesContainer>
       <NoteForm />
-      <NotesList />
+      <NotesList isPinnedList={false} />
+      <NotesList isPinnedList={true} />
     </NotesContainer>
   );
 }

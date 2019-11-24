@@ -71,9 +71,10 @@ function NoteForm({ addNote, updateStructureLocally }) {
         isPinned,
         tags,
         bgColor,
-        column: 1,
+        column: isPinned ? 5 : 1,
         uuid: newUuid
       };
+      debugger;
       addNote(newNote);
     }
     setInputOpen(false);
@@ -163,7 +164,4 @@ const mapDispatchToProps = {
   updateStructureLocally
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(NoteForm);
+export default connect(mapStateToProps, mapDispatchToProps)(NoteForm);

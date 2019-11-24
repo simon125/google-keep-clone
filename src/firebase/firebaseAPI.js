@@ -100,14 +100,14 @@ export const getStructureFromDB = () => {
     );
 };
 
-export const pushUidToStructure = (uuid) => {
+export const pushUidToStructure = (uuid, col) => {
   return db
     .collection('structure')
     .doc('notes')
     .set(
       {
-        'column-1': {
-          id: 'column-1',
+        [`column-${col}`]: {
+          id: `column-${col}`,
           tasksIds: firebase.firestore.FieldValue.arrayUnion(uuid)
         }
       },
@@ -164,7 +164,7 @@ export const addNoteToDB = (note) => {
     .collection('test1')
     .add(note)
     .then(() => {
-      pushUidToStructure(note.uuid);
+      pushUidToStructure(note.uuid, note.column);
     })
     .catch((err) => console.error(err));
 };
