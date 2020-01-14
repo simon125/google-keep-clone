@@ -25,7 +25,7 @@ function NoteForm({ addNote, updateStructureLocally }) {
   const [checkList, setCheckList] = useState({});
   const [isPinned, setIsPinned] = useState(false);
   const [tags, setTags] = useState([]);
-  const [bgColor, setBgColor] = useState('transparent');
+  const [bgColor, setBgColor] = useState('rgba(255,255,255,0.8)');
   const [isInputOpen, setInputOpen] = useState(false);
   const [noteEditorMode, setNoteEditorMode] = useState(false);
 
@@ -49,7 +49,7 @@ function NoteForm({ addNote, updateStructureLocally }) {
     setTags([]);
     setCheckList({});
     setIsPinned(false);
-    setBgColor('transparent');
+    setBgColor('rgba(255,255,255,0.8)');
     setNoteEditorMode(false);
     setInputOpen(false);
   };

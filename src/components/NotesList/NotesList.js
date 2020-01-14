@@ -9,6 +9,7 @@ import {
 } from '../../firebase/firebaseAPI';
 import equal from 'deep-equal';
 import { Container } from './notes-list-elements';
+import PropTypes from 'prop-types';
 
 const NOT_PINNED_COLUMNS = ['column-1', 'column-2', 'column-3', 'column-4'];
 const PINNED_COLUMNS = ['column-5', 'column-6', 'column-7', 'column-8'];
@@ -91,21 +92,49 @@ class NotesList extends React.Component {
       return <h1>Loading</h1>;
     }
     return (
-      <DragDropContext onDragEnd={this.onDragEndRedux}>
-        <Container>
-          {columns.map((columnId) => {
-            const column = structure[columnId];
-            const tasks = column.tasksIds.map(
-              (taskId) =>
-                Object.values(notes).filter((note) => note.uuid === taskId)[0]
-            );
-            return <Column key={column.id} column={column} tasks={tasks} />;
-          })}
-        </Container>
-      </DragDropContext>
+      <>
+        <DragDropContext onDragEnd={this.onDragEndRedux}>
+          <Container
+            style={{
+              width: 'fit-content',
+              margin: '0 auto',
+              paddingTop: '10px'
+            }}
+          >
+            <div
+              style={{
+                width: '100%',
+                height: '10px',
+                position: 'absolute',
+                top: '5px',
+                left: '30px',
+                fontSize: '13px',
+                color: '#333',
+                letterSpacing: '0.5px'
+              }}
+            >
+              {this.props.isPinnedList ? <p>PRZYPIĘTE</p> : <p>INNE</p>}
+            </div>
+            {columns.map((columnId) => {
+              const column = structure[columnId];
+              const tasks = column.tasksIds.map(
+                (taskId) =>
+                  Object.values(notes).filter((note) => note.uuid === taskId)[0]
+              );
+              return <Column key={column.id} column={column} tasks={tasks} />;
+            })}
+          </Container>
+        </DragDropContext>
+      </>
     );
   }
 }
+
+NotesList.propTypes = {
+  isPinnedList: PropTypes.bool.isRequired,
+  notes: PropTypes.object,
+  structure: PropTypes.object
+};
 
 const mapStateToProps = (state) => {
   return {

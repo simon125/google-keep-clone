@@ -55,9 +55,10 @@ db.collection('structure')
     }
   );
 
-export const updateNote = (fields, id) => {
+export const updateNote = async (fields, id) => {
   debugger;
-  db.collection('test1')
+  return db
+    .collection('test1')
     .doc(id)
     .update(fields)
     .then(function() {

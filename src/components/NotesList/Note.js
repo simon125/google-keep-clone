@@ -3,7 +3,11 @@ import { connect } from 'react-redux';
 import { Draggable } from 'react-beautiful-dnd';
 import { IconButton } from '../NoteForm/NoteFormElements';
 import NotesFormFooter from '../NoteForm/NotesFormFooter';
-import { updateNote, removeNoteFromDB } from '../../firebase/firebaseAPI';
+import {
+  updateNote,
+  removeNoteFromDB,
+  updateStructure
+} from '../../firebase/firebaseAPI';
 import { updateStructureLocally, deleteNote } from '../../redux/notes';
 import TagList from '../TagList/TagList';
 import cloneDeep from 'clone-deep';
@@ -20,7 +24,8 @@ import uuid from 'uuid';
 class Task extends React.Component {
   state = {
     isHovered: false,
-    isContextMenuOpen: false
+    isContextMenuOpen: false,
+    editMode: false
   };
 
   handleMouseOver = () => {
@@ -79,6 +84,36 @@ class Task extends React.Component {
     }
   };
 
+  handlePinClick = (isPinned, id) => {
+    updateNote(
+      { isPinned: !this.props.task.isPinned },
+      this.props.task.id
+    ).then(() => {
+      let noteStructure;
+      if (!this.props.task.isPinned) {
+        debugger;
+        noteStructure = { ...this.props.noteStructure };
+        for (let prop in noteStructure) {
+          noteStructure[prop].tasksIds = noteStructure[prop].tasksIds.filter(
+            (taskId) => taskId !== this.props.task.uuid
+          );
+        }
+        noteStructure['column-1'].tasksIds.push(this.props.task.uuid);
+      } else {
+        noteStructure = { ...this.props.noteStructure };
+
+        for (let prop in noteStructure) {
+          noteStructure[prop].tasksIds = noteStructure[prop].tasksIds.filter(
+            (taskId) => taskId !== this.props.task.uuid
+          );
+        }
+        noteStructure['column-5'].tasksIds.push(this.props.task.uuid);
+      }
+      updateStructure(noteStructure);
+      this.props.updateStructureLocally(noteStructure);
+    });
+  };
+
   render() {
     const {
       task: { title, note, bgColor, tags, checkList, isPinned, id },
@@ -86,7 +121,7 @@ class Task extends React.Component {
     } = this.props;
 
     const { isHovered } = this.state;
-
+    // TODO: try to refactor this place, create function which returns content
     let content =
       Object.values(checkList).length === 0 ? (
         <TextNote>{note}</TextNote>
@@ -140,6 +175,8 @@ class Task extends React.Component {
       <Draggable draggableId={this.props.task.uuid} index={index}>
         {(provided, snapshot) => (
           <NoteContainer
+            editMode={this.state.editMode}
+            onDoubleClick={() => this.setState({ editMode: true })}
             onMouseOver={this.handleMouseOver}
             onMouseLeave={this.handleMouseLeave}
             isHovered={this.state.isHovered}
@@ -160,7 +197,7 @@ class Task extends React.Component {
                       opacity: isHovered ? 1 : 0
                     }}
                     className={isPinned ? 'icon-pin' : 'icon-pin-outline'}
-                    onClick={() => updateNote({ isPinned: !isPinned }, id)}
+                    onClick={this.handlePinClick}
                   />
                 </Title>
               )}
@@ -172,7 +209,7 @@ class Task extends React.Component {
                     opacity: isHovered ? 1 : 0
                   }}
                   className={isPinned ? 'icon-pin' : 'icon-pin-outline'}
-                  onClick={() => updateNote({ isPinned: !isPinned }, id)}
+                  onClick={this.handlePinClick}
                 />
               )}
               {content}
