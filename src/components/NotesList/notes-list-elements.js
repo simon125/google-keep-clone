@@ -4,6 +4,7 @@ export const Container = styled.div`
   display: flex;
   justify-content: center;
 `;
+// position: relative;
 
 // SINGLE NOTE
 
@@ -25,7 +26,6 @@ export const NoteContainer = styled.div`
   padding: 12px 0 10px 0px;
   margin-bottom: 15px;
   background-color: ${(props) => props.bgColor};
-  transition: background-color 300ms;
   cursor: pointer;
   box-shadow: ${(props) =>
     props.isHovered ? '0px 0px 5px -2px rgba(0,0,0,0.75)' : ''};

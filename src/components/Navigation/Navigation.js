@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import {
   DesktopLinksGroup,
   NavElement,
@@ -9,36 +10,40 @@ import {
   MobileLinksGroup,
   CloseNavBtn,
   NavMobileElement
-} from "./navigation-elements";
-import { Link } from "react-router-dom";
-import { Icon } from "../../UI/theme";
-import { signOut } from "../../firebase/firebaseAuth";
+} from './navigation-elements';
+import { Link } from 'react-router-dom';
+import { Icon } from '../../UI/theme';
+import { signOut } from '../../firebase/firebaseAuth';
 
-function DesktopNav() {
+function DesktopNav({ isLoggedIn }) {
   return (
     <DesktopLinksGroup>
       <NavElement>
-        <Link style={{ textDecoration: "none", color: "#fff" }} to="/">
+        <Link style={{ textDecoration: 'none', color: '#fff' }} to="/">
           Home
         </Link>
       </NavElement>
+      {isLoggedIn && (
+        <NavElement>
+          <Link style={{ textDecoration: 'none', color: '#fff' }} to="/notes">
+            Notes
+          </Link>
+        </NavElement>
+      )}
       <NavElement>
-        <Link style={{ textDecoration: "none", color: "#fff" }} to="/notes">
-          Notes
-        </Link>
-      </NavElement>
-      <NavElement>
-        <Link style={{ textDecoration: "none", color: "#fff" }} to="/about">
+        <Link style={{ textDecoration: 'none', color: '#fff' }} to="/about">
           About
         </Link>
       </NavElement>
-      <NavElement>
-        <AuthButton onClick={signOut}>Log out</AuthButton>
-      </NavElement>
+      {isLoggedIn && (
+        <NavElement>
+          <AuthButton onClick={signOut}>Log out</AuthButton>
+        </NavElement>
+      )}
     </DesktopLinksGroup>
   );
 }
-function MobileNav() {
+function MobileNav({ isLoggedIn }) {
   const [isMobileNavOpen, toggleMobileNav] = useState(false);
   return (
     <>
@@ -49,40 +54,44 @@ function MobileNav() {
         <NavMobileElement>
           <Link
             onClick={() => toggleMobileNav(!isMobileNavOpen)}
-            style={{ textDecoration: "none", color: "#fff" }}
+            style={{ textDecoration: 'none', color: '#fff' }}
             to="/"
           >
             <Icon className="fas fa-home" /> Home
           </Link>
         </NavMobileElement>
+        {isLoggedIn && (
+          <NavMobileElement>
+            <Link
+              onClick={() => toggleMobileNav(!isMobileNavOpen)}
+              style={{ textDecoration: 'none', color: '#fff' }}
+              to="/notes"
+            >
+              <Icon className="far fa-clipboard" /> Notes
+            </Link>
+          </NavMobileElement>
+        )}
         <NavMobileElement>
           <Link
             onClick={() => toggleMobileNav(!isMobileNavOpen)}
-            style={{ textDecoration: "none", color: "#fff" }}
-            to="/notes"
-          >
-            <Icon className="far fa-clipboard" /> Notes
-          </Link>
-        </NavMobileElement>
-        <NavMobileElement>
-          <Link
-            onClick={() => toggleMobileNav(!isMobileNavOpen)}
-            style={{ textDecoration: "none", color: "#fff" }}
+            style={{ textDecoration: 'none', color: '#fff' }}
             to="/about"
           >
             <Icon className="fas fa-info" /> About
           </Link>
         </NavMobileElement>
-        <NavMobileElement>
-          <AuthButton
-            onClick={() => {
-              signOut();
-              toggleMobileNav(!isMobileNavOpen);
-            }}
-          >
-            <Icon className="fas fa-sign-out-alt" /> Log out
-          </AuthButton>
-        </NavMobileElement>
+        {isLoggedIn && (
+          <NavMobileElement>
+            <AuthButton
+              onClick={() => {
+                signOut();
+                toggleMobileNav(!isMobileNavOpen);
+              }}
+            >
+              <Icon className="fas fa-sign-out-alt" /> Log out
+            </AuthButton>
+          </NavMobileElement>
+        )}
         <CloseNavBtn onClick={() => toggleMobileNav(!isMobileNavOpen)}>
           <Icon className="fas fa-times" /> Close
         </CloseNavBtn>
@@ -91,13 +100,23 @@ function MobileNav() {
   );
 }
 
-function Navigation() {
+function Navigation({ isLoggedIn }) {
   return (
     <Nav>
       <Title>Google Keep Clone</Title>
-      {window.innerWidth <= 720 ? <MobileNav /> : <DesktopNav />}
+      {window.innerWidth <= 720 ? (
+        <MobileNav isLoggedIn={isLoggedIn} />
+      ) : (
+        <DesktopNav isLoggedIn={isLoggedIn} />
+      )}
     </Nav>
   );
 }
 
-export default Navigation;
+const mapStateToProps = (state) => {
+  return {
+    isLoggedIn: state.auth.isLoggedIn
+  };
+};
+
+export default connect(mapStateToProps, {})(Navigation);

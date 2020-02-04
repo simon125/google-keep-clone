@@ -3,8 +3,16 @@ import { connect } from 'react-redux';
 import { Draggable } from 'react-beautiful-dnd';
 import { IconButton } from '../NoteForm/NoteFormElements';
 import NotesFormFooter from '../NoteForm/NotesFormFooter';
-import { updateNote, removeNoteFromDB } from '../../firebase/firebaseAPI';
-import { updateStructureLocally, deleteNote } from '../../redux/notes';
+import {
+  updateNote,
+  removeNoteFromDB,
+  updateStructure
+} from '../../firebase/firebaseAPI';
+import {
+  updateStructureLocally,
+  deleteNote,
+  editNote
+} from '../../redux/notes';
 import TagList from '../TagList/TagList';
 import cloneDeep from 'clone-deep';
 import Checkbox from './Checkbox';
@@ -20,7 +28,8 @@ import uuid from 'uuid';
 class Task extends React.Component {
   state = {
     isHovered: false,
-    isContextMenuOpen: false
+    isContextMenuOpen: false,
+    editMode: false
   };
 
   handleMouseOver = () => {
@@ -79,6 +88,60 @@ class Task extends React.Component {
     }
   };
 
+  handlePinClick = (isPinned, id) => {
+    updateNote(
+      { isPinned: !this.props.task.isPinned },
+      this.props.task.id
+    ).then(() => {
+      let noteStructure;
+      if (!this.props.task.isPinned) {
+        noteStructure = { ...this.props.noteStructure };
+        for (let prop in noteStructure) {
+          if (noteStructure[prop].hasOwnProperty('tasksIds')) {
+            noteStructure[prop].tasksIds = noteStructure[prop].tasksIds.filter(
+              (taskId) => taskId !== this.props.task.uuid
+            );
+          }
+        }
+        noteStructure['column-1'].tasksIds.push(this.props.task.uuid);
+      } else {
+        noteStructure = { ...this.props.noteStructure };
+
+        for (let prop in noteStructure) {
+          if (noteStructure[prop].hasOwnProperty('tasksIds')) {
+            noteStructure[prop].tasksIds = noteStructure[prop].tasksIds.filter(
+              (taskId) => taskId !== this.props.task.uuid
+            );
+          }
+        }
+        noteStructure['column-5'].tasksIds.push(this.props.task.uuid);
+      }
+      updateStructure(noteStructure);
+      this.props.updateStructureLocally(noteStructure);
+    });
+  };
+
+  getTop = () => {
+    if (this.myRef && this.myRef.current) {
+      const windowInnerTop = window.innerHeight;
+      const offset = this.myRef.current.parentElement.offsetTop;
+      const targetHeight = this.myRef.current.parentElement.parentElement
+        .parentElement.offsetHeight;
+
+      return windowInnerTop / 2 - (offset + targetHeight / 2);
+    }
+  };
+
+  getLeft = () => {
+    if (this.myRef && this.myRef.current) {
+      const windowInnerWidth = window.innerWidth;
+      const offset = this.myRef.current.parentElement.parentElement
+        .parentElement.offsetLeft;
+      const targetWidth = this.myRef.current.offsetWidth;
+      return windowInnerWidth / 2 - (offset + targetWidth / 2);
+    }
+  };
+
   render() {
     const {
       task: { title, note, bgColor, tags, checkList, isPinned, id },
@@ -86,7 +149,7 @@ class Task extends React.Component {
     } = this.props;
 
     const { isHovered } = this.state;
-
+    // TODO: try to refactor this place, create function which returns content
     let content =
       Object.values(checkList).length === 0 ? (
         <TextNote>{note}</TextNote>
@@ -138,21 +201,40 @@ class Task extends React.Component {
 
     return (
       <Draggable draggableId={this.props.task.uuid} index={index}>
-        {(provided, snapshot) => (
-          <NoteContainer
-            onMouseOver={this.handleMouseOver}
-            onMouseLeave={this.handleMouseLeave}
-            isHovered={this.state.isHovered}
-            bgColor={this.props.task.bgColor}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            ref={provided.innerRef}
-            isDragging={snapshot.isDragging}
-          >
-            <NoteContent>
-              {title !== '' && (
-                <Title>
-                  {title}
+        {(provided, snapshot) => {
+          return (
+            <NoteContainer
+              editMode={this.state.editMode}
+              onMouseOver={this.handleMouseOver}
+              onMouseLeave={this.handleMouseLeave}
+              onDoubleClick={
+                () => this.props.editNote(this.props.task)
+                // this.setState({ editMode: !this.state.editMode })
+                // fire on action with note to edit
+              }
+              isHovered={this.state.isHovered}
+              bgColor={this.props.task.bgColor}
+              ref={provided.innerRef}
+              isDragging={snapshot.isDragging}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+            >
+              <NoteContent>
+                {title !== '' && (
+                  <Title>
+                    {title}
+                    <IconButton
+                      style={{
+                        float: 'right',
+                        marginRight: '0',
+                        opacity: isHovered ? 1 : 0
+                      }}
+                      className={isPinned ? 'icon-pin' : 'icon-pin-outline'}
+                      onClick={this.handlePinClick}
+                    />
+                  </Title>
+                )}
+                {title === '' && (
                   <IconButton
                     style={{
                       float: 'right',
@@ -160,42 +242,42 @@ class Task extends React.Component {
                       opacity: isHovered ? 1 : 0
                     }}
                     className={isPinned ? 'icon-pin' : 'icon-pin-outline'}
-                    onClick={() => updateNote({ isPinned: !isPinned }, id)}
+                    onClick={this.handlePinClick}
                   />
-                </Title>
-              )}
-              {content}
-            </NoteContent>
-            <TagList
-              size="small"
-              tags={tags}
-              setTags={(newTags) => updateNote({ tags: [...newTags] }, id)}
-            />
-
-            <NotesFormFooter
-              isHovered={isHovered}
-              chosenTags={tags}
-              setTags={(newTags) => {
-                updateNote({ tags: [...newTags] }, id);
-              }}
-              bgColor={bgColor}
-              setBgColor={(color) => {
-                updateNote({ bgColor: color }, id);
-              }}
-              noteEditorMode={note.trim() === ''}
-              handleToggleClick={this.handleToggleClick}
-              closeOption={false}
-            >
-              <IconButton
-                style={{
-                  marginLeft: '12px'
-                }}
-                className={'fas fa-trash-alt'}
-                onClick={this.handleDeleteClick}
+                )}
+                {content}
+              </NoteContent>
+              <TagList
+                size="small"
+                tags={tags}
+                setTags={(newTags) => updateNote({ tags: [...newTags] }, id)}
               />
-            </NotesFormFooter>
-          </NoteContainer>
-        )}
+
+              <NotesFormFooter
+                isHovered={isHovered}
+                chosenTags={tags}
+                setTags={(newTags) => {
+                  updateNote({ tags: [...newTags] }, id);
+                }}
+                bgColor={bgColor}
+                setBgColor={(color) => {
+                  updateNote({ bgColor: color }, id);
+                }}
+                noteEditorMode={note.trim() === ''}
+                handleToggleClick={this.handleToggleClick}
+                closeOption={false}
+              >
+                <IconButton
+                  style={{
+                    marginLeft: '12px'
+                  }}
+                  className={'fas fa-trash-alt'}
+                  onClick={this.handleDeleteClick}
+                />
+              </NotesFormFooter>
+            </NoteContainer>
+          );
+        }}
       </Draggable>
     );
   }
@@ -206,6 +288,8 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { updateStructureLocally, deleteNote })(
-  Task
-);
+export default connect(mapStateToProps, {
+  updateStructureLocally,
+  deleteNote,
+  editNote
+})(Task);

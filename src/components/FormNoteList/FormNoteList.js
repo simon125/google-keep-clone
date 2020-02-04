@@ -1,31 +1,37 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   IconButton,
   Icon,
   ListContainer,
   ListItem,
   ListItemForm,
-  Checkbox,
+  // Checkbox,
   ListItemFormInput
-} from "../NoteForm/NoteFormElements";
-import uuid from "uuid";
+} from '../NoteForm/NoteFormElements';
+import Checkbox from '../NotesList/Checkbox';
+import uuid from 'uuid';
 
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
-function FormNoteList({ checkList, setCheckList, deleteListItem }) {
-  console.log(checkList);
-  const [listItem, setListItem] = useState("");
-  const handleSubmit = e => {
+function FormNoteList({
+  checkList,
+  setCheckList,
+  deleteListItem,
+  editMode = false
+}) {
+  const [listItem, setListItem] = useState('');
+  const handleSubmit = (e) => {
     const uid = uuid();
     const newCheckList = {
       ...checkList,
       [uid]: {
         listItem: e.target.value,
+        status: false,
         uid
       }
     };
     setCheckList(newCheckList);
-    setListItem("");
+    setListItem('');
   };
   const handleChange = (e, item) => {
     setCheckList({
@@ -36,13 +42,13 @@ function FormNoteList({ checkList, setCheckList, deleteListItem }) {
       }
     });
   };
-  const handleKeyUp = e => {
-    if (e.key === "Enter") {
-      document.getElementById("listItemFormInput").focus();
+  const handleKeyUp = (e) => {
+    if (e.key === 'Enter') {
+      document.getElementById('listItemFormInput').focus();
     }
   };
   //TODO: refactor result function
-  const onDragEnd = result => {
+  const onDragEnd = (result) => {
     const sourceIndex = result.source.index;
     const destinationIndex = result.destination.index;
 
@@ -83,7 +89,12 @@ function FormNoteList({ checkList, setCheckList, deleteListItem }) {
         {(provided, snapshot) => (
           <ListContainer {...provided.droppableProps} ref={provided.innerRef}>
             {Object.values(checkList).map((item, i, arr) => (
-              <Draggable key={item.uid} draggableId={item.uid} index={i}>
+              <Draggable
+                isDragDisabled={editMode}
+                key={item.uid}
+                draggableId={item.uid}
+                index={i}
+              >
                 {(provided, snapshot) => (
                   <ListItem
                     {...provided.draggableProps}
@@ -94,11 +105,22 @@ function FormNoteList({ checkList, setCheckList, deleteListItem }) {
                         {...provided.dragHandleProps}
                         className="fas fa-grip-vertical"
                       />
-                      <Checkbox type="checkbox" />
+                      <Checkbox
+                        handleCheck={() => {
+                          setCheckList({
+                            ...checkList,
+                            [item.uid]: {
+                              ...checkList[item.uid],
+                              status: !checkList[item.uid].status
+                            }
+                          });
+                        }}
+                        listItem={checkList[item.uid]}
+                      />
                       <ListItemFormInput
                         autoFocus={i === arr.length - 1}
                         value={checkList[item.uid].listItem}
-                        onChange={e => handleChange(e, item)}
+                        onChange={(e) => handleChange(e, item)}
                         onKeyUp={handleKeyUp}
                       />
                     </span>

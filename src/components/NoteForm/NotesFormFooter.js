@@ -21,7 +21,11 @@ function NotesFormFooter({
         className={noteEditorMode ? 'far fa-clipboard' : 'fas fa-list-ul'}
         onClick={handleToggleClick}
       />
-      <TagWidget chosenTags={chosenTags} setTags={setTags} />
+      <TagWidget
+        isHovered={isHovered}
+        chosenTags={chosenTags}
+        setTags={setTags}
+      />
       <ColorPicker chosenColor={bgColor} setBgColor={setBgColor} />
       {closeOption && <CloseBtn onClick={handleCloseClick}>Zamknij</CloseBtn>}
       {children}
