@@ -3,8 +3,8 @@ import styled from 'styled-components';
 export const Container = styled.div`
   display: flex;
   justify-content: center;
-  position: relative;
 `;
+// position: relative;
 
 // SINGLE NOTE
 
@@ -20,28 +20,12 @@ export const CheckListItem = styled.li`
   margin-bottom: 5px;
 `;
 
-// position: absolute;
-// z-index: 999;
-// top: 50%;
-// left: 50%;
-// transform: translate(-50%, -50%);
-// height: 400px;
-// width: 600px;
-
 export const NoteContainer = styled.div`
-  position: ${(props) => (props.editMode ? 'absolute' : '')};
-  z-index: ${(props) => (props.editMode ? '999' : '')};
-  top: ${(props) => (props.editMode ? '50%' : '')};
-  left: ${(props) => (props.editMode ? '50%' : '')};
-  transform: ${(props) => (props.editMode ? 'translate(-50%, -50%)' : '')};
-  min-height: ${(props) => (props.editMode ? '400px' : '')};
-  min-width: ${(props) => (props.editMode ? '600px' : '')};
   border: 1px solid lightgrey;
   border-radius: 8px;
   padding: 12px 0 10px 0px;
   margin-bottom: 15px;
   background-color: ${(props) => props.bgColor};
-  transition: all 1300ms;
   cursor: pointer;
   box-shadow: ${(props) =>
     props.isHovered ? '0px 0px 5px -2px rgba(0,0,0,0.75)' : ''};

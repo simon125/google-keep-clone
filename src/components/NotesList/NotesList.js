@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 import { DragDropContext } from 'react-beautiful-dnd';
 import Column from './Column';
 import { updateStructureLocally } from '../../redux/notes';
@@ -16,7 +17,9 @@ const PINNED_COLUMNS = ['column-5', 'column-6', 'column-7', 'column-8'];
 
 class NotesList extends React.Component {
   componentDidMount() {
-    getStructureFromDB();
+    if (this.props.isPinnedList && this.props.isLoggedIn) {
+      getStructureFromDB(this.props.userId);
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -83,6 +86,15 @@ class NotesList extends React.Component {
   };
 
   render() {
+    if (!this.props.isLoggedIn) {
+      return (
+        <Redirect
+          to={{
+            pathname: '/'
+          }}
+        />
+      );
+    }
     const { notes, structure, isPinnedList = false } = this.props;
     const columns = isPinnedList ? PINNED_COLUMNS : NOT_PINNED_COLUMNS;
     if (
@@ -101,20 +113,6 @@ class NotesList extends React.Component {
               paddingTop: '10px'
             }}
           >
-            <div
-              style={{
-                width: '100%',
-                height: '10px',
-                position: 'absolute',
-                top: '5px',
-                left: '30px',
-                fontSize: '13px',
-                color: '#333',
-                letterSpacing: '0.5px'
-              }}
-            >
-              {this.props.isPinnedList ? <p>PRZYPIĘTE</p> : <p>INNE</p>}
-            </div>
             {columns.map((columnId) => {
               const column = structure[columnId];
               const tasks = column.tasksIds.map(
@@ -139,7 +137,9 @@ NotesList.propTypes = {
 const mapStateToProps = (state) => {
   return {
     notes: { ...state.notes.notes },
-    structure: { ...state.notes.noteStructure }
+    structure: { ...state.notes.noteStructure },
+    isLoggedIn: state.auth.isLoggedIn,
+    userId: state.auth.user && state.auth.user.uid ? state.auth.user.uid : ''
   };
 };
 

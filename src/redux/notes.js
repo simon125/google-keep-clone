@@ -6,6 +6,8 @@ const GET_TAGS = 'GET_TAGS';
 const SET_LAST_INDEX = 'SET_LAST_INDEX';
 const GET_NOTE_STRUCTURE = 'GET_NOTE_STRUCTURE';
 const UPDATE_STRUCTURE = 'UPDATE_STRUCTURE';
+const EDIT_NOTE = 'EDIT_NOTE';
+const CLEAR_EDIT_FORM = 'CLEAR_EDIT_FORM';
 
 export const addNote = (note) => (dispatch, getState) => {
   addNoteToDB(note);
@@ -49,12 +51,26 @@ export const updateStructureLocally = (newStructure) => {
   };
 };
 
+export const editNote = (note) => {
+  return {
+    type: EDIT_NOTE,
+    payload: note
+  };
+};
+
+export const clearEditNote = () => {
+  return {
+    type: CLEAR_EDIT_FORM
+  };
+};
+
 const initialState = {
   notes: [],
   structure: {},
   tags: [],
   noteStructure: {},
-  lastIndex: 0
+  lastIndex: 0,
+  editedNote: {}
 };
 
 export const notes = (state = initialState, action) => {
@@ -94,6 +110,16 @@ export const notes = (state = initialState, action) => {
       return {
         ...state,
         noteStructure: action.payload
+      };
+    case 'EDIT_NOTE':
+      return {
+        ...state,
+        editedNote: action.payload
+      };
+    case 'CLEAR_EDIT_FORM':
+      return {
+        ...state,
+        editedNote: {}
       };
     // case "DELETE_NOTE":
     //   return {

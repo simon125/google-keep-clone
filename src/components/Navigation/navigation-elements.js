@@ -20,6 +20,7 @@ export const DesktopLinksGroup = styled.ul`
 export const NavElement = styled.li`
   margin: 0 15px;
   transition: all 0.5s;
+  cursor: pointer;
   &:hover {
     transform: scale(1.1);
   }
@@ -27,6 +28,7 @@ export const NavElement = styled.li`
 export const AuthButton = styled.a`
   text-decoration: none;
   color: #fff;
+  cursor: pointer;
 `;
 
 export const Title = styled.h1`

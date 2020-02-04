@@ -1,5 +1,6 @@
 import uuid from 'uuid';
 
+// getListBasedOnLineTextBreak move to the file which is using this function
 export const getListBasedOnLineTextBreak = (text) => {
   return text.split(/\r?\n/).reduce((newCheckList, nameOfListItem) => {
     const uid = uuid();

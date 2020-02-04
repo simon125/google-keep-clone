@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
+import React, { useState } from 'react';
+import { Formik, Form } from 'formik';
+import * as Yup from 'yup';
 import {
   InputField,
   SubmitButton,
@@ -8,16 +8,17 @@ import {
   FormContainer,
   Label,
   InputErrMsg
-} from "./common-elements";
-import { Card } from "../../UI/theme";
-import { createUserWithEmailAndPassword } from "../../firebase/firebaseAuth";
+} from './common-elements';
+import { Card } from '../../UI/theme';
+import { createUserWithEmailAndPassword } from '../../firebase/firebaseAuth';
+import { withRouter } from 'react-router-dom';
 
-function RegisterForm() {
+function RegisterForm(props) {
   const [signUpState] = useState({
-    email: "",
-    password: "",
-    name: "",
-    repeatedPassword: ""
+    email: '',
+    password: '',
+    name: '',
+    repeatedPassword: ''
   });
 
   return (
@@ -27,45 +28,47 @@ function RegisterForm() {
         initialValues={{ ...signUpState }}
         validationSchema={Yup.object().shape({
           name: Yup.string()
-            .min(2, "Name is to short!")
-            .max(10, "Name is to long!")
-            .required("Name is required!"),
+            .min(2, 'Name is to short!')
+            .max(10, 'Name is to long!')
+            .required('Name is required!'),
           email: Yup.string()
-            .email("Invalid email")
-            .required("Email is required!"),
+            .email('Invalid email')
+            .required('Email is required!'),
           password: Yup.string()
-            .min(2, "Password is to short!")
-            .max(10, "Password is to long!")
-            .required("Password is required!"),
+            .min(2, 'Password is to short!')
+            .max(10, 'Password is to long!')
+            .required('Password is required!'),
           repeatedPassword: Yup.string()
-            .oneOf([Yup.ref("password"), null], "Passwords must match")
-            .required("Password is required!")
+            .oneOf([Yup.ref('password'), null], 'Passwords must match')
+            .required('Password is required!')
         })}
         onSubmit={({ email, password }, { setErrors, resetForm }) => {
           createUserWithEmailAndPassword(email, password)
             .then(() => {
               resetForm();
               //TODO SHOW TOAST
-              alert("You have created account successfully!");
+              setTimeout(() => {
+                props.history.push('/notes');
+              }, 500);
             })
-            .catch(error => {
+            .catch((error) => {
               //TODO check if there is possible to get multiply of errors message
               const errorCode = error.code;
-              if (errorCode === "auth/weak-password") {
-                setErrors({ password: "Password is to weak!" });
-              } else if (errorCode === "auth/invalid-email") {
-                setErrors({ email: "Invalid Email" });
-              } else if (errorCode === "auth/email-already-in-use") {
-                setErrors({ email: "Email already in use!" });
-              } else if (errorCode === "auth/operation-not-allowed") {
+              if (errorCode === 'auth/weak-password') {
+                setErrors({ password: 'Password is to weak!' });
+              } else if (errorCode === 'auth/invalid-email') {
+                setErrors({ email: 'Invalid Email' });
+              } else if (errorCode === 'auth/email-already-in-use') {
+                setErrors({ email: 'Email already in use!' });
+              } else if (errorCode === 'auth/operation-not-allowed') {
                 setErrors({
-                  email: "Invalid Email",
-                  password: "Invalid password"
+                  email: 'Invalid Email',
+                  password: 'Invalid password'
                 });
               } else {
                 setErrors({
-                  email: "Invalid Email",
-                  password: "Invalid password"
+                  email: 'Invalid Email',
+                  password: 'Invalid password'
                 });
               }
             });
@@ -140,4 +143,4 @@ function RegisterForm() {
   );
 }
 
-export default RegisterForm;
+export default withRouter(RegisterForm);

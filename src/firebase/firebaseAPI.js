@@ -8,92 +8,135 @@ import {
   // updateStructureLocally
 } from '../redux/notes';
 import * as firebase from 'firebase/app';
+import { auth } from './firebaseAuth';
 
 const db = app.firestore();
+// const user = firebase.auth().currentUser;
+// if (auth.currentUser) {
+export const getNotesFromDB = (currentUserId) => {
+  return db
+    .collection('notes')
+    .where('authorId', '==', currentUserId)
+    .onSnapshot(
+      (snapshot) => {
+        const notes = {};
+        snapshot.forEach((el) => {
+          notes[el.id] = { ...el.data(), id: el.id };
+        });
+        store.dispatch(getNotes(notes));
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+};
+export const getTagsFromDB = (currentUserId) => {
+  return db
+    .collection('tags')
+    .where('authorId', '==', currentUserId)
+    .onSnapshot(
+      (snapshot) => {
+        const tags = [];
+        snapshot.forEach((el) => {
+          tags.push({ ...el.data(), id: el.id });
+        });
+        store.dispatch(getTags(tags));
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+};
+export const getStructureFromDBv2 = (currentUserId) => {
+  return db
+    .collection('structure')
+    .where('authorId', '==', currentUserId)
+    .onSnapshot(
+      (doc) => {
+        let structure;
+        doc.forEach((el) => {
+          structure = { ...el.data(), structureId: el.id };
+        });
+        if (!structure) {
+          structure = {
+            authorId: currentUserId,
+            'column-1': {
+              id: 'column-1',
+              tasksIds: []
+            },
+            'column-2': {
+              id: 'column-2',
+              tasksIds: []
+            },
+            'column-3': {
+              id: 'column-3',
+              tasksIds: []
+            },
+            'column-4': {
+              id: 'column-4',
+              tasksIds: []
+            },
+            'column-5': {
+              id: 'column-5',
+              tasksIds: []
+            },
+            'column-6': {
+              id: 'column-6',
+              tasksIds: []
+            },
+            'column-7': {
+              id: 'column-7',
+              tasksIds: []
+            },
+            'column-8': {
+              id: 'column-8',
+              tasksIds: []
+            }
+          };
 
-db.collection('test1').onSnapshot(
-  (snapshot) => {
-    const notes = {};
-    snapshot.forEach((el) => {
-      notes[el.id] = { ...el.data(), id: el.id };
-    });
-    store.dispatch(getNotes(notes));
-  },
-  (err) => {
-    console.log(err);
-  }
-);
-
-db.collection('tags').onSnapshot(
-  (snapshot) => {
-    const tags = [];
-    snapshot.forEach((el) => {
-      tags.push({ ...el.data(), id: el.id });
-    });
-    store.dispatch(getTags(tags));
-  },
-  (err) => {
-    console.log(err);
-  }
-);
-
-db.collection('structure')
-  .doc('notes')
-  .onSnapshot(
-    (doc) => {
-      // console.log('Current data: ', );
-      // const tags = [];
-      // snapshot.forEach((el) => {
-      //   tags.push({ ...el.data(), id: el.id });
-      // });
-
-      // snapshot
-      store.dispatch(getNoteStructure(doc.data()));
-    },
-    (err) => {
-      console.log(err);
-    }
-  );
+          db.collection('structure')
+            .add(structure)
+            .then((docRef) => {
+              store.dispatch(
+                getNoteStructure({ ...structure, structureId: docRef.id })
+              );
+            });
+        } else {
+          store.dispatch(getNoteStructure(structure));
+        }
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
+};
+// }
 
 export const updateNote = async (fields, id) => {
-  debugger;
   return db
-    .collection('test1')
+    .collection('notes')
     .doc(id)
     .update(fields)
     .then(function() {
-      debugger;
-      console.log('Document successfully updated!');
+      // console.log('Document successfully updated!');
     })
     .catch(function(error) {
-      debugger;
       console.error('Error updating document: ', error);
     });
 };
 
-// export const updateNote = (checkList, id) => {
-//   db.collection('test1')
-//     .doc(id)
-//     .update({
-//       checkList
-//     })
-//     .then(function() {
-//       console.log('Document successfully updated!');
-//     })
-//     .catch(function(error) {
-//       // The document probably doesn't exist.
-//       console.error('Error updating document: ', error);
-//     });
-// };
-
-export const getStructureFromDB = () => {
+export const getStructureFromDB = (currentUserId) => {
   return db
     .collection('structure')
-    .doc('notes')
+    .where('authorId', '==', currentUserId)
     .get()
     .then(
       function(doc) {
-        store.dispatch(getNoteStructure(doc.data()));
+        let structure;
+        doc.forEach((el) => {
+          structure = { ...el.data(), structureId: el.id };
+        });
+        store.dispatch(getNoteStructure(structure));
       },
       function(error) {
         //...
@@ -102,9 +145,11 @@ export const getStructureFromDB = () => {
 };
 
 export const pushUidToStructure = (uuid, col) => {
+  const structureId = store.getState().notes.noteStructure.structureId;
+
   return db
     .collection('structure')
-    .doc('notes')
+    .doc(structureId)
     .set(
       {
         [`column-${col}`]: {
@@ -117,9 +162,11 @@ export const pushUidToStructure = (uuid, col) => {
 };
 
 export const removeUidFromStructure = (uuid, column) => {
+  const structureId = store.getState().notes.noteStructure.structureId;
+
   return db
     .collection('structure')
-    .doc('notes')
+    .doc(structureId)
     .set(
       {
         [column]: {
@@ -131,30 +178,32 @@ export const removeUidFromStructure = (uuid, column) => {
     );
 };
 
-export const updateStructure = (newStructure) =>
-  db
-    .collection('structure')
-    .doc('notes')
+export const updateStructure = (newStructure) => {
+  const structureId = store.getState().notes.noteStructure.structureId;
+
+  db.collection('structure')
+    .doc(structureId)
     .update(newStructure)
     .then(function() {
-      console.log('Document successfully updated!');
+      // console.log('Document successfully updated!');
     })
     .catch(function(error) {
       console.error('Error updating document: ', error);
     });
+};
 
 export const getNotesDB = () => db.collection('test1').get();
 
 export const updatePositionOnNoteList = (id, column, row) =>
   db
-    .collection('test1')
+    .collection('notes')
     .doc(id)
     .update({
       column,
       row
     })
     .then(function() {
-      console.log('Document successfully updated!');
+      // console.log('Document successfully updated!');
     })
     .catch(function(error) {
       console.error('Error updating document: ', error);
@@ -162,8 +211,8 @@ export const updatePositionOnNoteList = (id, column, row) =>
 
 export const addNoteToDB = (note) => {
   return db
-    .collection('test1')
-    .add(note)
+    .collection('notes')
+    .add({ ...note, authorId: auth.currentUser.uid })
     .then(() => {
       pushUidToStructure(note.uuid, note.column);
     })
@@ -171,24 +220,18 @@ export const addNoteToDB = (note) => {
 };
 export const removeNoteFromDB = (note, column) => {
   return db
-    .collection('test1')
+    .collection('notes')
     .doc(note.id)
     .delete()
     .then(() => removeUidFromStructure(note.uuid, column))
     .catch((err) => console.error(err));
 };
 
-export const deleteNote = (id) => {};
-
-export const editNote = (id) => {
-  console.log('note editet');
-};
-
 export const addTagToDB = (tag) => {
   db.collection('tags')
-    .add(tag)
+    .add({ ...tag, authorId: auth.currentUser.uid })
     .then(() => {
-      console.warn('added tag');
+      // console.warn('added tag');
     })
     .catch((err) => console.error(err));
 };

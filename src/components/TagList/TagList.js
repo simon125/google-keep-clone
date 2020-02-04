@@ -21,7 +21,7 @@ export default function TagList({ tags, setTags, size = 'medium' }) {
         }}
       >
         {tags.map((tag) => (
-          <Tag setTags={setTags} tags={tags} tag={tag} size={size} />
+          <Tag key={tag} setTags={setTags} tags={tags} tag={tag} size={size} />
         ))}
       </ul>
     </>
