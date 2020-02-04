@@ -14,6 +14,7 @@
     "react-beautiful-dnd": "^11.0.4",
     "react-dom": "^16.8.6",
     "react-grid-layout": "^0.16.6",
+    "react-loader-spinner": "^3.1.5",
     "react-masonry-component": "^6.2.1",
     "react-redux": "^7.0.3",
     "react-router-dom": "^5.0.1",
