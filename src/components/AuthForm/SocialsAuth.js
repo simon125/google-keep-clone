@@ -1,24 +1,24 @@
-import React from "react";
-import { Card, Icon } from "../../UI/theme";
+import React from 'react';
+import { Card, Icon } from '../../UI/theme';
 import {
   SocialsContainer,
   FacebookBtn,
   GoogleBtn,
   FormHeader
-} from "./common-elements";
+} from './common-elements';
 import {
   signInWithGoogle,
   signInWithFacebook
-} from "../../firebase/firebaseAuth";
+} from '../../firebase/firebaseAuth';
 
 function SocialsAuth() {
   return (
     <Card>
-      <FormHeader>Continue with socials</FormHeader>
+      <FormHeader>Continue with google account</FormHeader>
       <SocialsContainer>
-        <FacebookBtn onClick={signInWithFacebook}>
+        {/* <FacebookBtn onClick={signInWithFacebook}>
           Sing in with <Icon className="fab fa-facebook-square" />
-        </FacebookBtn>
+        </FacebookBtn> */}
         <GoogleBtn onClick={signInWithGoogle}>
           Sing in with <Icon className="fab fa-google" />
         </GoogleBtn>

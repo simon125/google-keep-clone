@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
@@ -108,15 +109,15 @@ function LogInForm(props) {
               >
                 {errors.loginPassword}
               </InputErrMsg>
-              <SubmitButton type="submit">
+              <SubmitButton disabled={props.isLoggedIn} type="submit">
                 Sign in <span className="fas fa-sign-in-alt" />
               </SubmitButton>
-              <RememberMeSection>
+              {/* <RememberMeSection>
                 <Checkbox type="checkbox" onChange={() => {}} id="rememberMe" />
                 <RememberMeLabel htmlFor="rememberMe">
                   Remember me
                 </RememberMeLabel>
-              </RememberMeSection>
+              </RememberMeSection> */}
             </FormContainer>
           </Form>
         )}
@@ -125,4 +126,10 @@ function LogInForm(props) {
   );
 }
 
-export default withRouter(LogInForm);
+const mapStateToProps = (state) => {
+  return {
+    isLoggedIn: state.auth.isLoggedIn
+  };
+};
+
+export default withRouter(connect(mapStateToProps, {})(LogInForm));
