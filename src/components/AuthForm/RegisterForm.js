@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Formik, Form } from 'formik';
+import { connect } from 'react-redux';
 import * as Yup from 'yup';
 import {
   InputField,
@@ -132,7 +133,7 @@ function RegisterForm(props) {
               >
                 {errors.repeatedPassword}
               </InputErrMsg>
-              <SubmitButton type="submit">
+              <SubmitButton disabled={props.isLoggedIn} type="submit">
                 Sign up <span className="fas fa-user-plus" />
               </SubmitButton>
             </FormContainer>
@@ -143,4 +144,10 @@ function RegisterForm(props) {
   );
 }
 
-export default withRouter(RegisterForm);
+const mapStateToProps = (state) => {
+  return {
+    isLoggedIn: state.auth.isLoggedIn
+  };
+};
+
+export default withRouter(connect(mapStateToProps, {})(RegisterForm));

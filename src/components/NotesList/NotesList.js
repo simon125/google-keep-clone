@@ -11,6 +11,7 @@ import {
 import equal from 'deep-equal';
 import { Container } from './notes-list-elements';
 import PropTypes from 'prop-types';
+import Loader from 'react-loader-spinner';
 
 const NOT_PINNED_COLUMNS = ['column-1', 'column-2', 'column-3', 'column-4'];
 const PINNED_COLUMNS = ['column-5', 'column-6', 'column-7', 'column-8'];
@@ -98,17 +99,34 @@ class NotesList extends React.Component {
     const { notes, structure, isPinnedList = false } = this.props;
     const columns = isPinnedList ? PINNED_COLUMNS : NOT_PINNED_COLUMNS;
     if (
-      Object.keys(notes).length === 0 ||
-      Object.keys(structure).length === 0
+      (Object.keys(notes).length === 0 ||
+        Object.keys(structure).length === 0) &&
+      isPinnedList
     ) {
-      return <h1>Loading</h1>;
+      return (
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%,-50%)'
+          }}
+        >
+          <Loader
+            type="Puff"
+            color="#00BFFF"
+            height={100}
+            width={100}
+            timeout={3000} //3 secs
+          />
+        </div>
+      );
     }
     return (
       <>
         <DragDropContext onDragEnd={this.onDragEndRedux}>
           <Container
             style={{
-              width: 'fit-content',
               margin: '0 auto',
               paddingTop: '10px'
             }}

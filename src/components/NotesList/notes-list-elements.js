@@ -27,6 +27,8 @@ export const NoteContainer = styled.div`
   margin-bottom: 15px;
   background-color: ${(props) => props.bgColor};
   cursor: pointer;
+  min-width: ${(props) => (props.isDraggable ? 'fit-content' : '80%')};
+  max-width: 200px;
   box-shadow: ${(props) =>
     props.isHovered ? '0px 0px 5px -2px rgba(0,0,0,0.75)' : ''};
   &:hover {
@@ -57,7 +59,6 @@ export const ColumnContainer = styled.div`
   flex-direction: column;
 `;
 export const TaskList = styled.div`
-  padding: 8px;
   transition: background-color 0.2s ease;
   flex-grow: 1;
   min-height: 100px;

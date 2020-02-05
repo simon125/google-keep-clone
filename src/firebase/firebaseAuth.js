@@ -38,8 +38,8 @@ export const signInWithGoogle = () => {
   auth
     .signInWithPopup(googleProvider)
     .then((result) => {
-      const { uid, email } = auth.currentUser();
-      store.dispatch(logIn({ email, uid }));
+      // const { uid, email } = auth.currentUser();
+      // store.dispatch(logIn({ email, uid }));
     })
     .catch((err) => {
       console.error(err);

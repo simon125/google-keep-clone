@@ -1,10 +1,10 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const InputField = styled.input`
   margin: 4px 5px 8px 5px;
   outline: none;
   border: ${({ isInvalid }) =>
-    isInvalid ? "solid 1px red" : "1px solid #bbb"};
+    isInvalid ? 'solid 1px red' : '1px solid #bbb'};
   border-radius: 5px;
   padding-left: 15px;
   width: 200px;
@@ -21,7 +21,7 @@ export const InputErrMsg = styled.p`
   padding-left: 5px;
   color: red;
   font-size: 10px;
-  display: ${({ isInvalid }) => (isInvalid ? "block" : "none")};
+  display: ${({ isInvalid }) => (isInvalid ? 'block' : 'none')};
 `;
 
 export const SubmitButton = styled.button`
@@ -34,10 +34,10 @@ export const SubmitButton = styled.button`
   background: #f6d622;
   border-radius: 5px;
   color: #fff;
-  cursor: pointer;
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
   transition: all 0.3s;
   &:hover {
-    background: #ffa500;
+    background: ${(props) => (props.disabled ? '' : '#ffa500')};
   }
   @media (max-width: 500px) {
     width: 90vw;
@@ -80,7 +80,8 @@ export const GoogleBtn = styled.button`
   outline: none;
   cursor: pointer;
   color: #fff;
-  width: 48%;
+  width: 90%;
+  margin: 0 auto;
   padding: 7px;
   border-radius: 5px;
   @media (max-width: 500px) {
