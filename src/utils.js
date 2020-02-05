@@ -23,7 +23,7 @@ export const getSingleNoteBasedOnList = (list) => {
 export const checkIfTargetIsForm = (target) => {
   if (!target) return false;
   const className = target.className;
-  if (className && className.includes('note-form')) {
+  if (className && className.includes && className.includes('note-form')) {
     return true;
   }
   return checkIfTargetIsForm(target.parentElement);

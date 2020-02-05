@@ -1,5 +1,5 @@
 import React from 'react';
-import Task from './Note';
+import Task from './NoteDraggable';
 import { Droppable } from 'react-beautiful-dnd';
 import { ColumnContainer, TaskList } from './notes-list-elements';
 

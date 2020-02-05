@@ -10,7 +10,7 @@ export const NotesContainer = styled.section`
 `;
 export const FormContainer = styled.div`
   margin: 0 auto;
-  width: 600px;
+  max-width: 600px;
   min-height: 60px;
   transition: background 0.2s;
   background: ${(props) =>
@@ -18,6 +18,12 @@ export const FormContainer = styled.div`
   border-radius: 5px;
   box-shadow: 1px 1px 8px 1px rgba(89, 89, 89, 0.53);
   padding: 20px 0px 6px 0px;
+  @media (max-width: 650px) {
+    margin: 0 25px;
+  }
+  @media (max-width: 600px) {
+    margin: 0 10px;
+  }
 `;
 
 export const FormGroup = styled.div`

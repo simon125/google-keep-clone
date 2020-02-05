@@ -127,7 +127,6 @@ class NotesList extends React.Component {
         <DragDropContext onDragEnd={this.onDragEndRedux}>
           <Container
             style={{
-              width: 'fit-content',
               margin: '0 auto',
               paddingTop: '10px'
             }}
