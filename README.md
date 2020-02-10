@@ -3,6 +3,8 @@
 
 # Google keep clone
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a965a19742a8427e9aa11ba69bb98f8d)](https://app.codacy.com/app/simon125/google-keep-clone?utm_source=github.com&utm_medium=referral&utm_content=simon125/google-keep-clone&utm_campaign=Badge_Grade_Settings)
+
 ### Google keep clone is a clone of well known service from google for notes/tasks and much more.
 
 By doing it, I was trying to clone the UI almost in 100%(from. list of notes, panel for searching) without bunch of features,
