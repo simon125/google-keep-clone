@@ -27,10 +27,6 @@ You can easyli check the current version [here](https://keep-clone-app.firebasea
 
 
 ## TODO
-
-- RWD - must have
+- filtering/searching
 - Refactor if new side project won't consume my whole attention
 
-## Latest bugs
-
-- still problem with creating new account trough google/facebook
