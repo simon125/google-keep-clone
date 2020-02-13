@@ -29,4 +29,10 @@ You can easyli check the current version [here](https://keep-clone-app.firebasea
 ## TODO
 - filtering/searching
 - Refactor if new side project won't consume my whole attention
+When I'm using this app things which need improvment appear, 
+- one more time !!!filtering/searching!!!
+- possible to delete the tag from DB
+- improve edit mode in desktop
+- improve edit mode in mobile
+- displaying in center tools to note in mobile version
 
