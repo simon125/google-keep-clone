@@ -27,6 +27,7 @@ You can easyli check the current version [here](https://keep-clone-app.firebasea
 
 
 ## TODO
+- set rules in firebase
 - filtering/searching
 - Refactor if new side project won't consume my whole attention
 When I'm using this app things which need improvment appear, 
