@@ -11,7 +11,7 @@ Project for me is kind of challange, sandbox for new getting know new features/p
 
 ### Live demo
 
-You can easyli check the current version [here](https://keep-clone-app.firebaseapp.com/)
+You can easily check the current version [here](https://keep-clone-app.firebaseapp.com/)
 
 
 ## Tech
