@@ -28,7 +28,7 @@ function ColorPicker({ setBgColor, chosenColor = 'rgba(255,255,255,0.8)' }) {
     <ColorPickerContainer>
       <Button>
         <Icon
-          className="fas fa-paint-brush"
+          className="fas fa-paint-palette"
           onMouseOver={() => {
             const timeOut = setTimeout(() => {
               setIsPalleteOpen(false);
